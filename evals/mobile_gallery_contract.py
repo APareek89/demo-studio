@@ -140,6 +140,51 @@ def main():
                             closed = page.evaluate(MEASURE)
                             check(prefix + ' closes the drawer without overflow or voice restart', closed['noPageOverflow'] and
                                   closed['viewport']['width'] == width and closed['viewport']['scale'] == 1 and closed['voice'] == original_voice)
+                    # Several revealed tags fit in portrait but need a scrolled
+                    # rail after rotation. The selected feature must stay readable.
+                    page.set_viewport_size({'width': 390, 'height': 844})
+                    page.evaluate('''()=>{
+                      const b=galleryQA.synthetic(),s=b.slides[1];s.media=s.media.slice(0,1);s.lines=s.lines.slice(0,1);
+                      s.callouts=Array.from({length:3},(_,i)=>({...s.callouts[0],id:'feature-'+i,text:'Reviewed feature '+(i+1),reveal_on_line:0}));
+                      return galleryQA.setup(b);
+                    }''')
+                    page.get_by_role('button', name='Browse at my pace', exact=True).tap()
+                    page.wait_for_function("()=>galleryQA.state().active.length&&document.querySelectorAll('.slide-stack>.slide').length===1")
+                    page.locator('.slide.on .gallery-tag[data-id=feature-2]').tap()
+                    for label, width, height in [('selected-portrait', 390, 844), ('selected-landscape', 844, 390), ('selected-short', 390, 430)]:
+                        page.set_viewport_size({'width': width, 'height': height})
+                        page.evaluate('async()=>{for(let i=0;i<8;i++)await new Promise(r=>requestAnimationFrame(r))}')
+                        selected = page.evaluate('''()=>{
+                          const c=document.querySelector('.slide.on .gallery-captions'),tag=c.querySelector('.gallery-tag.active'),t=tag.querySelector('.gallery-feature-copy');
+                          const a=c.getBoundingClientRect(),b=t.getBoundingClientRect(),s=galleryQA.state();
+                          return {visible:b.top>=a.top-1&&b.bottom<=a.bottom+1,selected:tag.dataset.id,scroll:c.scrollTop,
+                            pointer:getComputedStyle(document.querySelector('.slide.on .gallery-pointer')).opacity,
+                            active:s.active.map(a=>a.text),played:s.played.length};
+                        }''')
+                        check(name + ' ' + label + ' keeps the selected text pointer and narration', selected['visible'] and
+                              selected['selected'] == 'feature-2' and selected['pointer'] == '1' and selected['played'] == 1 and
+                              selected['active'] == ['Approved first image detail.'], selected)
+                        page.screenshot(path=str(args.output / (name + '-' + label + '.png')), animations='disabled')
+                    page.set_viewport_size({'width': 390, 'height': 844})
+                    page.evaluate('''()=>{
+                      const b=galleryQA.synthetic(),s=b.slides[1];s.media=s.media.slice(0,1);s.lines=s.lines.slice(0,1);
+                      s.callouts=Array.from({length:3},(_,i)=>({...s.callouts[0],id:'feature-'+i,text:i===2?'Reviewed feature three with the complete original source condition. '.repeat(5):'Reviewed feature '+(i+1),reveal_on_line:0}));
+                      return galleryQA.setup(b);
+                    }''')
+                    page.get_by_role('button', name='Browse at my pace', exact=True).tap()
+                    page.wait_for_function("()=>galleryQA.state().active.length&&document.querySelectorAll('.slide-stack>.slide').length===1")
+                    page.locator('.slide.on .gallery-tag[data-id=feature-2]').tap()
+                    page.set_viewport_size({'width': 844, 'height': 390})
+                    page.evaluate('async()=>{for(let i=0;i<8;i++)await new Promise(r=>requestAnimationFrame(r))}')
+                    oversized = page.evaluate('''()=>{
+                      const c=document.querySelector('.slide.on .gallery-captions'),t=c.querySelector('.gallery-tag.active'),a=c.getBoundingClientRect(),b=t.getBoundingClientRect();
+                      return {oversized:b.height>a.height,startVisible:b.top>=a.top-1&&b.top<a.bottom-20,scroll:c.scrollTop};
+                    }''')
+                    check(name + ' oversized selected tag begins visibly after rotation', oversized['oversized'] and oversized['startVisible'], oversized)
+                    manual_scroll = page.locator('.slide.on .gallery-captions').evaluate("e=>{e.scrollTop+=12;e.dispatchEvent(new Event('scroll'));return e.scrollTop}")
+                    page.evaluate('async()=>{for(let i=0;i<8;i++)await new Promise(r=>requestAnimationFrame(r))}')
+                    check(name + ' oversized caption keeps the customer scroll position',
+                          manual_scroll > oversized['scroll'] and page.locator('.slide.on .gallery-captions').evaluate('e=>e.scrollTop') == manual_scroll)
                     page.evaluate('galleryQA.destroy()')
                     context.close()
                 finally:

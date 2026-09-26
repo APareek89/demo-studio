@@ -3,7 +3,7 @@
 
 ## Mobile correction — 26 September 2026
 
-Finite QA, loop off. Local deck445/445, acceptance24/24, smoke3/3, full mock28/28; native mounted WebKit26/26 with Safari/CriOS profiles, recorded ownership12/12, audio lifecycle13/13; gallery320/320, mobile94/94, continuity28/28, image load14/14. Adjacent voice96, LiveKit58, transport15, hold26, noise31, recovery17, listen16, saves18, HTTP6, media7, fallback18, priority11 pass. Native local RTC30/30 after two retained failed attempts; no configuration relaxation or paid providers. Deployment fixtures18/18, actual isolated proxy58/58 plus153/153. [Full evidence, failures and FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). AWS cutover/public verification remains pending until its dated release receipt; physical iPhone/acoustic acceptance is not established by emulation.
+Finite QA, loop off. Local deck445/445, acceptance24/24, smoke3/3, full mock28/28; native mounted WebKit26/26 with Safari/CriOS profiles, recorded ownership12/12, audio lifecycle13/13; gallery320/320, mobile104/104, continuity28/28, image load14/14. Adjacent voice96, LiveKit58, transport15, hold26, noise31, recovery17, listen16, saves18, HTTP6, media7, fallback18, priority11 pass. Native local RTC30/30 after two retained failed attempts; no configuration relaxation or paid providers. Deployment fixtures18/18, actual isolated proxy58/58 plus153/153. [Full evidence, failures and FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). AWS cutover/public verification remains pending until its dated release receipt; physical iPhone/acoustic acceptance is not established by emulation.
 
 ## LiveKit default adoption — 25 September 2026 · released
 

@@ -181,13 +181,17 @@ function galleryView(slide, native, entries, previous, next, options, continuing
       label.addEventListener('click',()=>{if(!preparing && !dead && !fallback)highlight(c.id,line);});captions.append(label);
     }
     captions.hidden=!eligible.length;
+    ensureSelectedCaptionVisible();
+    disclosure.textContent=active.proxy?'Illustrative product view':''; disclosure.hidden=!active.proxy;
+  }
+  function ensureSelectedCaptionVisible(resized=false) {
     const currentLabel=[...captions.children].find(el=>el.dataset.id===selected?.id);
     if(currentLabel && captions.clientHeight) {
       const top=currentLabel.offsetTop, bottom=top+currentLabel.offsetHeight;
-      if(bottom>captions.scrollTop+captions.clientHeight)captions.scrollTop=bottom-captions.clientHeight;
+      if(resized && currentLabel.offsetHeight>captions.clientHeight)captions.scrollTop=top;
+      else if(bottom>captions.scrollTop+captions.clientHeight)captions.scrollTop=bottom-captions.clientHeight;
       else if(top<captions.scrollTop)captions.scrollTop=top;
     }
-    disclosure.textContent=active.proxy?'Illustrative product view':''; disclosure.hidden=!active.proxy;
   }
   function fit() {
     const {w,h}=bounds();const iw=image.naturalWidth || native.images?.[entries.indexOf(active)]?.naturalWidth || w, ih=image.naturalHeight || native.images?.[entries.indexOf(active)]?.naturalHeight || h;
@@ -303,7 +307,7 @@ function galleryView(slide, native, entries, previous, next, options, continuing
     // Finish current moves into newly calculated geometry, without resolving an
     // old line as playable. The waiting prepareLine then uses current dimensions.
     for(const a of animations){try{a.finish();}catch(_) {}}
-    if(ready && !inherited){geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();}
+    if(ready && !inherited){ensureSelectedCaptionVisible(true);geometry=focusGeometry();camera.style.transform=geometry.transform;drawPointer();}
     else {cards.forEach((c,i)=>c.style.transform=pose(i));world.style.transform=worldPose(target);}
   }
   function highlight(id,index=99) {
