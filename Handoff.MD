@@ -2,13 +2,17 @@
 
 Current checkpoint: **26 September 2026**. Read this snapshot before historical briefs or chat. The complete previous handoff is preserved in [history](docs/history/context-before-master-2026-09-25/Handoff.MD).
 
-## Mobile correction in progress — 26 September
+## Current deployed release — mobile correction · 26 September
 
-Anand reported shared iPhone failure and requested Safari/Chrome diagnosis/fixes. Source fixes are complete: persistent gesture-primed recorded audio with explicit policy retry; bounded Web Audio resume/cleanup; hidden-footer gallery height; positioned clipped player/drawer. Core agents, workflow, voices, evidence and demo content are unchanged. Exact optional icon/manifest GET/HEAD routes avoid an operator challenge; other methods/private paths remain protected.
+Anand reported shared iPhone failure and requested Safari/Chrome diagnosis/fixes. GitHub master contains the fixes and AWS serves application **3591fb7** plus the explicit **5543fe1 CSS overlay**. Main cutover was2026-09-26T08:17:17Z; the subsequent welcome/intake CSS correction required no restart or data write. [Public BMW](https://13-202-0-79.sslip.io/#/play/dm_29df0418), [release and recovery receipt](docs/aws/release-mobile-2026-09-26.md). SOURCE_COMMIT records3591fb7; SOURCE_OVERLAY.json identifies the one CSS exception. Later documentation commits do not change running application bytes.
 
-Local core445/24/smoke3/full mock28, native WebKit26, recorded12/context13, gallery320/mobile104/continuity28/image load14, native RTC30 and adjacent contracts pass. Two local RTC attempts failed before the successful30/30 and remain recorded. No paid QA or physical iPhone acoustic test. [QA/FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). Existing AWS ae98532 remains active until the mobile dated receipt records cutover. Deployment helper verifies a fresh complete backup including recent customer sessions and blocks active builds/visits. Never restore an old data archive as part of code rollback.
+Fixes: persistent gesture-primed recorded audio with explicit policy retry; bounded Web Audio resume/cleanup; gallery height and selected-label visibility after rotation; contained closed drawer; reachable welcome/intake controls in short landscape windows. Core agents, workflow, voices, evidence and demo content are unchanged. Exact optional icon/manifest GET/HEAD routes avoid an operator challenge; other methods/private paths remain protected.
 
-## Current deployed release — LiveKit everywhere · 25 September
+Local core445/24/smoke3/full mock28, native WebKit26, recorded12/context13, gallery320/mobile104/welcome66/continuity28/image load14, native RTC30 and adjacent contracts pass. AWS36/36 staged suites, public32/32, proxy20/20 and public hosted WebKit RTC10/10 pass; knowledge has58passes+2environment skips. All1436 source files verified with the exact CSS exception. All4273 existing data files survived the main cutover unchanged; the fresh full backup includes recent visits. Earlier failed attempts remain in [QA/FMEA](docs/qa/mobile-runtime-2026-09-26/README.md). No new paid QA or physical iPhone test; emulation does not establish acoustic, actual OS keyboard/background or cellular behavior. Never restore an old data archive during code rollback.
+
+Final public welcome21/21 passes in WebKit/Chromium portrait and two landscape sizes with screenshots and exact CSS verification. Two preceding WebKit test attempts failed because the temporary microphone safety stub prohibited the SDK's own shim assignment; the confirmed trace and corrected12/12 WebKit run remain recorded. This documentation checkpoint updates status only; no application or transport change followed5543fe1.
+
+## Previous deployed release — LiveKit everywhere · 25 September
 
 Anand accepted the trial and authorized default LiveKit locally and on AWS. Application **ae98532** and deployment tooling **986e515** are on GitHub master. AWS cut over **2026-09-25T13:47:23Z** to `/opt/demo-studio-releases/20260925-livekit`. [Public BMW](https://13-202-0-79.sslip.io/#/play/dm_29df0418), [local app](http://127.0.0.1:8910/), [release and rollback receipt](docs/aws/release-livekit-2026-09-25.md). Subsequent documentation commits do not change deployed application bytes. Older optional/local-only statements below are historical.
 

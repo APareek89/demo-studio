@@ -17,7 +17,7 @@ agentic pipeline with a human checkpoint at every place the agent could be wrong
   concerns, interrupt with questions, get honest answers, take a call to action.
 
 ## Must never break
-- **Mobile playback:** the welcome tap unlocks the recorded-audio element reused through the visit. A browser-policy block retains the current line with an explicit Enable audio action. Gallery, feature tags and reply controls remain contained through rotation and a reduced keyboard viewport. Browser emulation is distinct from physical iPhone acceptance.
+- **Mobile playback:** the welcome tap unlocks the recorded-audio element reused through the visit. A browser-policy block retains the current line with an explicit Enable audio action. Gallery, feature tags and reply controls remain contained through rotation and a reduced keyboard viewport. Welcome and intake controls remain reachable in short landscape windows, with internal scrolling for unusually long content. Browser emulation is distinct from physical iPhone acceptance.
 - **No citation, no claim.** Authored speech uses the approved registry. Live answers use its pinned
   snapshot, attributed live evidence from enabled owner-supplied URL domains, or audited calculations from
   supplied inputs. Live evidence never silently updates the registry; promotion requires Align.
@@ -87,7 +87,7 @@ and preparation, preserving the prior publication. Film and Q&A do not count; cu
 
 ## Done for v1
 
-The25September listening hold, published-picture Q&A and selected-source I/O fixes are retained. The accepted LiveKit transport is now selected by server configuration for public playback and Rehearse, with no added graph node or autonomous answering agent. Applicationae98532 is deployed locally and on AWS after34/34 staged suites, hosted TLS-relay32/32, public28/28 and mic-off public RTC9/9. All4267existing AWS files remain unchanged; the small host admits two concurrent rooms. [Release receipt](docs/aws/release-livekit-2026-09-25.md) and Handoff record exact evidence, limits and rollback.
+The25September listening hold, published-picture Q&A and selected-source I/O fixes are retained. The accepted LiveKit transport is selected by server configuration for public playback and Rehearse, with no added graph node or autonomous answering agent. The26September mobile release is deployed on AWS as3591fb7 plus the explicit5543fe1 CSS overlay after36/36 staged suites, public32/32 and hosted mic-off WebKit RTC10/10. All4273 existing AWS files survived the main cutover unchanged; the small host admits two concurrent rooms. [Release receipt](docs/aws/release-mobile-2026-09-26.md) and Handoff record exact evidence, source provenance, limits and rollback.
 
 One product (the TVS iQube sample: 5 images + product URL, optionally a video and a PDF) goes
 end-to-end **locally**: Sources → *Reading your sources…* → Align (six cards approved through the
