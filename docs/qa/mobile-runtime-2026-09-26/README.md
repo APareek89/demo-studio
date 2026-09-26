@@ -52,3 +52,9 @@ Product context: PRD's interruptible, grounded voice tour; existing gallery, thr
 - PRD edge cases: portrait/rotation/keyboard, touch tags, voice off/permission failure, typing, interrupt/resume, restart and recorded/live ownership are the relevant user flows.
 
 Coverage:12/12 categories checked. Remaining acceptance limits are physical iPhone/acoustics, real cellular conditions and existing two-room hosted capacity, not claims resolved by mocked tests.
+
+## Final short-screen welcome correction
+
+The post-cutover real BMW landscape screenshot exposed clipped start buttons that the gallery-only checks did not cover. A single `max-height:500px` CSS block compacts welcome/intake spacing, title and controls; ordinary desktop/portrait rules stay intact and unusually long copy remains internally scrollable. Real BMW welcome66/66 in Chromium/WebKit checks portrait,844×390,844×320,568×320, desktop, synthetic keyboard-height intake, long-title scrolling and actual voice-toggle/Explore/Skip actions. No model, source, graph or audio change. Evidence: `output/mobile-welcome-2026-09-26/current/`.
+
+The15/15 CSS deployment fixtures verify the exact base/payload, complete source preflight, single-file atomic replacement, original backup, public hash, rollback on public mismatch/SIGTERM, and explicit base-plus-overlay provenance. No service restart or customer-data write is needed. The [release receipt](../../aws/release-mobile-2026-09-26.md) records actual deployment separately. FMEA reviewed the new layout and deployment boundaries; no unresolved blocking finding.

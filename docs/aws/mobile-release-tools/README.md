@@ -62,3 +62,30 @@ Failure during application cutover independently restores the prior app and reta
 ```
 
 Never restore the data archive over current customer writes as part of code rollback. Post-release customer activity can legitimately change session/FAQ/unknown files during verification; investigate any manifest difference rather than deleting it. The18 local release fixtures cover extraction/manifest safety, unchanged dependency reuse, source-bound browser proof, active Build/visit blocks, real backup corruption detection, success/failed cutovers and SIGTERM recovery. They use temporary data and service doubles, not actual AWS mutations or provider calls.
+
+## Single-file landscape welcome follow-up
+
+The post-cutover native WebKit join passed10/10, but its844×390 welcome screenshot exposed clipped start buttons. A separately reviewed CSS-only follow-up can use `static_css_patch.py`; it must not claim that the entire deployment now matches the follow-up Git commit. The base remains3591fb7 and all1,436 original source files remain represented by their existing manifest, with one explicit CSS exception.
+
+After committing the CSS, browser fixture and documentation changes, prepare the exact Git artifact locally:
+
+```sh
+python3 docs/aws/mobile-release-tools/static_css_patch.py package --commit FULL_FOLLOWUP_COMMIT --output output/deploy-mobile-20260926/css-package
+```
+
+Package creation rejects other application-source changes. Upload the two generated package files to a new private `css-package` directory below the existing remote receipt directory, and upload the reviewed helper there separately. Run with the existing Python3.11 interpreter:
+
+```sh
+/opt/demo-studio-releases/20260925-livekit/.venv/bin/python static_css_patch.py apply --package /opt/demo-studio-backups/20260926-mobile/css-package
+/opt/demo-studio-releases/20260925-livekit/.venv/bin/python static_css_patch.py verify --package /opt/demo-studio-backups/20260926-mobile/css-package
+```
+
+Apply refuses a changed base marker, old CSS hash, any original source-manifest hash, linked path or existing overlay. It saves the exact old CSS under a new private `css-overlay-COMMIT` receipt directory, preserves file ownership/mode during atomic replacement, checks served public bytes, and writes `SOURCE_OVERLAY.json` with the base commit, follow-up commit and both CSS hashes. `SOURCE_COMMIT` remains unchanged. No service restart, environment/auth modification, customer-data write or second full data backup occurs. Verification reads every original source-manifest file, accepting only the exact reviewed CSS digest substitution. Do not run the old whole-source verifier after this overlay without that explicit exception.
+
+For a later rollback, use the same artifact; unrelated subsequent CSS changes are protected:
+
+```sh
+/opt/demo-studio-releases/20260925-livekit/.venv/bin/python static_css_patch.py rollback --package /opt/demo-studio-backups/20260926-mobile/css-package
+```
+
+The15 local contracts include exact apply/rollback, byte and ownership/mode preservation, wrong-source/path/payload/manifest/link rejection, an HTTP verification failure, an actual SIGTERM during verification and unrelated-source drift. Rollback attempts CSS restoration, owned marker cleanup and public verification independently; it does not restore customer data. Record fresh actual portrait/landscape welcome screenshots after applying the overlay; no question or microphone is needed.

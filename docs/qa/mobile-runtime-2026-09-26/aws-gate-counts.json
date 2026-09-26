@@ -1,0 +1,458 @@
+{
+  "commit": "3591fb7b8489a565e3aa2bfde66de22d66a21b30",
+  "passed": 36,
+  "total": 36,
+  "outbound_attempts": 0,
+  "suites": [
+    {
+      "suite": "qa_deck",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 21.43,
+      "log": "app-gates-20260926T081331-546517532/qa_deck.log",
+      "log_sha256": "7b389d3364d38854b7ea7abff3568f39e5d4d14da0f8670fa153fe9027c83559",
+      "summaries": [
+        "| customer: a skipped intake cannot produce invented personal batches or bridges | \u2705 |",
+        "445/445 deck cases pass",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "qa_accept",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 5.44,
+      "log": "app-gates-20260926T081331-546517532/qa_accept.log",
+      "log_sha256": "92f283292ff090ff43d23cf7c517894ff009cdcfb2d3d495418a5ee15c66a189",
+      "summaries": [
+        "24/24 cases behave as required",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "smoke_mock",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 7.56,
+      "log": "app-gates-20260926T081331-546517532/smoke_mock.log",
+      "log_sha256": "8789dcec5be75e245e0a4205269513dae48a62149e806d40988471f2d152677e",
+      "summaries": [
+        "SMOKE OK dm_bfe6cf17",
+        "SMOKE OK (phase 2) dm_bfe6cf17",
+        "SMOKE OK (on-demand rehearsal) dm_bfe6cf17",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "release_mock_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 24.21,
+      "log": "app-gates-20260926T081331-546517532/release_mock_contract.log",
+      "log_sha256": "2530d7ee797c9c8f5d89bf421b42c88d0ffccfcf1e2229bc778dff504bb41169",
+      "summaries": [
+        "RELEASE JOURNEY: 28/28 passed; narration=194.22s measured; provider calls=0",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "knowledge_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 4.1,
+      "log": "app-gates-20260926T081331-546517532/knowledge_contract.log",
+      "log_sha256": "72c4527d58f6378b8c7f04d36853942130170899dc0c147d9ec62399a990019a",
+      "summaries": [
+        "test_actual_local_ocr_of_image_only_pdf (__main__.KnowledgeContract.test_actual_local_ocr_of_image_only_pdf) ... skipped 'Local OCR tools unavailable'",
+        "test_actual_local_renderer_uses_only_fake_safe_fetch (__main__.KnowledgeContract.test_actual_local_renderer_uses_only_fake_safe_fetch) ... skipped 'Installed Chrome unavailable'",
+        "Ran 60 tests in 3.027s",
+        "OK (skipped=2)",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "retrieval_io_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "log": "app-gates-20260926T081331-546517532/retrieval_io_contract.log",
+      "log_sha256": "3380b13dd2fce78b10612af4782c8cc1101bb9185cc3c248c19ea1cd67a0fd25",
+      "summaries": [
+        "Ran 12 tests in 0.054s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_visuals_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.77,
+      "log": "app-gates-20260926T081331-546517532/runtime_visuals_contract.log",
+      "log_sha256": "207e2e43b7010b19b1db59ab45797773e4457246d9d90a0b49bf6b127332becc",
+      "summaries": [
+        "Ran 23 tests in 0.229s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_graph_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.32,
+      "log": "app-gates-20260926T081331-546517532/runtime_graph_contract.log",
+      "log_sha256": "e92b30c072f1695c2fb74a42a13ac6b89c5ba34d3287afe3b0062e17c0562bba",
+      "summaries": [
+        "130/130 runtime graph contracts passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_repair_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.42,
+      "log": "app-gates-20260926T081331-546517532/runtime_repair_contract.log",
+      "log_sha256": "d1443896286a9362f4bcb383beca7da92545852bd7fe6a93229fb254a6094042",
+      "summaries": [
+        "106/106 runtime repair contracts passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_delivery_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.67,
+      "log": "app-gates-20260926T081331-546517532/runtime_delivery_contract.log",
+      "log_sha256": "a72e8e9603b83a7a322794f084eab0e811d833ddb603d8d0fcc0a91b482529bc",
+      "summaries": [
+        "Runtime delivery: 27/27 passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_hedge_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.42,
+      "log": "app-gates-20260926T081331-546517532/runtime_hedge_contract.log",
+      "log_sha256": "72e81a38b043dfa907109c1920f7c09380b13e9bddecd2dcbc57c71b24c539bf",
+      "summaries": [
+        "35/35 hedge contracts passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_hedge_config_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 10.69,
+      "log": "app-gates-20260926T081331-546517532/runtime_hedge_config_contract.log",
+      "log_sha256": "e3327906e1c743a0c0ea96c20d5bd7f1b8a846419890b4f2bff1eddab1a41fca",
+      "summaries": [
+        "Ran 6 tests in 10.605s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_operational_failure_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.37,
+      "log": "app-gates-20260926T081331-546517532/runtime_operational_failure_contract.log",
+      "log_sha256": "5ed169628d99117549d3ba7a7c0e84b4f1fa9e40bea4eaee1923cd3404685e76",
+      "summaries": [
+        "13/13 operational failure contracts passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_domain_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 3.95,
+      "log": "app-gates-20260926T081331-546517532/runtime_domain_contract.log",
+      "log_sha256": "d43f5ee5ed1b8ca1a18f956e000fa7bf3972b85681a39ba390063a3a70fcf9fb",
+      "summaries": [
+        "Ran 25 tests in 0.623s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_customer_sites_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 3.27,
+      "log": "app-gates-20260926T081331-546517532/runtime_customer_sites_contract.log",
+      "log_sha256": "aeea1e94e037eab34269def86d7c2b44d7346670bb17c77791093facfafa01e3",
+      "summaries": [
+        "Ran 20 tests in 1.041s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_web_search_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 3.57,
+      "log": "app-gates-20260926T081331-546517532/runtime_web_search_contract.log",
+      "log_sha256": "3700c7297b59ee06df9982bbe1004676a9137b8b3dcd9e65690a71db037f8c8f",
+      "summaries": [
+        "Ran 37 tests in 1.353s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_live_table_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.32,
+      "log": "app-gates-20260926T081331-546517532/runtime_live_table_contract.log",
+      "log_sha256": "369002c79171eacc8926c2b31f980df51079efe23fdb10395f35d7e851a920c0",
+      "summaries": [
+        "Ran 21 tests in 0.139s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "runtime_transmission_conditions_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.32,
+      "log": "app-gates-20260926T081331-546517532/runtime_transmission_conditions_contract.log",
+      "log_sha256": "af17dfb7fa8ef207c24b9ce9b7747acf2e81b2593fd9a3a5d6606118e9733478",
+      "summaries": [
+        "Ran 17 tests in 0.230s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "faq_cache_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.77,
+      "log": "app-gates-20260926T081331-546517532/faq_cache_contract.log",
+      "log_sha256": "910d6f9ffa5a92157556f1a71b3428d2ca404020abef1a1f92c2a4835c47fc7c",
+      "summaries": [
+        "Ran 27 tests in 1.137s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "live_transport_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.37,
+      "log": "app-gates-20260926T081331-546517532/live_transport_contract.log",
+      "log_sha256": "709ecde42fd2a0aa2d6749d9b1ceec90a71334c8d1e583f3f8ebb6ca0a77b82f",
+      "summaries": [
+        "Live transport: 25/25 passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "sarvam_stream_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "log": "app-gates-20260926T081331-546517532/sarvam_stream_contract.log",
+      "log_sha256": "5c1a10029a4602249c304cce034883542e08c7f4efa00b26aa2fc1b39a1f4bfc",
+      "summaries": [
+        "Sarvam streaming: 17/17 passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "session_checkpoint_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.57,
+      "log": "app-gates-20260926T081331-546517532/session_checkpoint_contract.log",
+      "log_sha256": "b7c8a905339fdb8347f3d4642800e6391a3af39491ccf54bcb3864f5d802ab26",
+      "summaries": [
+        "Session checkpoint: 26/26 (actual route and threads; isolated mock; blocked sockets)",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "session_input_mode_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.52,
+      "log": "app-gates-20260926T081331-546517532/session_input_mode_contract.log",
+      "log_sha256": "6922b68d32dbf2cdf09287819afeb85eb0f4491e59f1f9e8f32ff0ad99d68890",
+      "summaries": [
+        "Session input mode: 8/8",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "explore_cancellation_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.37,
+      "log": "app-gates-20260926T081331-546517532/explore_cancellation_contract.log",
+      "log_sha256": "51c3eeb6a684c706f97ceda8fd854a4b5df232e4aa90e6e09055bc1d11ba47d7",
+      "summaries": [
+        "Explore cancellation: 9/9 passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "speech_style_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 1.57,
+      "log": "app-gates-20260926T081331-546517532/speech_style_contract.log",
+      "log_sha256": "0462346c8fc80f079f0d39245473bded819f046205f56dce66ccbc55af967288",
+      "summaries": [
+        "Speech style contracts: 30/30",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "voice_lock_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 1.47,
+      "log": "app-gates-20260926T081331-546517532/voice_lock_contract.log",
+      "log_sha256": "904632ef8b68868c9648171446a26bef3dddbd071aa17c194b87478f3bd9a160",
+      "summaries": [
+        "Voice lock contracts: 27/27",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "livekit_trial_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 3.47,
+      "log": "app-gates-20260926T081331-546517532/livekit_trial_contract.log",
+      "log_sha256": "1b9a46f05f94a8b910b4b0aaca81daf0f1c74497f2eef4f6fef1ef7086dff6f3",
+      "summaries": [
+        "LiveKit trial: 50/50 passed",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "livekit_hosted_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 2.98,
+      "log": "app-gates-20260926T081331-546517532/livekit_hosted_contract.log",
+      "log_sha256": "a8f2a4e4a0ecb689a769f9008ed6f49e822d172802a061a1f2dec16ac3b88f66",
+      "summaries": [
+        "Ran 29 tests in 0.548s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "livekit_launcher_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 0.16,
+      "log": "app-gates-20260926T081331-546517532/livekit_launcher_contract.log",
+      "log_sha256": "6c6c0fb59b5e036c36a3ce3cb779d6f703e92244a4245d098fbcdd8a7a9e88fd",
+      "summaries": [
+        "Ran 16 tests in 0.019s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "local_launcher_contract",
+      "kind": "python",
+      "exit_code": 0,
+      "seconds": 0.21,
+      "log": "app-gates-20260926T081331-546517532/local_launcher_contract.log",
+      "log_sha256": "7b0f04acd45b2450bc3ce44c6fcb905b8dedf9e5fe7d323e786642fa40f6384f",
+      "summaries": [
+        "Ran 15 tests in 0.060s",
+        "OK",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "live_voice_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.32,
+      "log": "app-gates-20260926T081331-546517532/live_voice_contract.log",
+      "log_sha256": "e073bb9b7d5205bd6cb6e93924b5eb9bfbd0cf48b56a8cf311d35de932a57471",
+      "summaries": [
+        "Live voice: 96/96 passed (fake devices and transports only)",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "livekit_voice_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "log": "app-gates-20260926T081331-546517532/livekit_voice_contract.log",
+      "log_sha256": "bfccf754ea07c5e93dd7e09c4cc2a706c7d04d513549601e9ea6ed3875af5535",
+      "summaries": [
+        "livekit_voice_contract: 58/58",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "voice_transport_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.11,
+      "log": "app-gates-20260926T081331-546517532/voice_transport_contract.log",
+      "log_sha256": "40b58cf00b6df7ef13ac1244c38eb2e2eb5afa3552cf1b00e0c281401e52e936",
+      "summaries": [
+        "voice_transport: 15/15",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "question_ack_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.12,
+      "log": "app-gates-20260926T081331-546517532/question_ack_contract.log",
+      "log_sha256": "4ab664099b02f72027d8d11b1ababf4da88692076940d81d941019ce9328fc7e",
+      "summaries": [
+        "question_ack: 14/14",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "mobile_audio_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.11,
+      "log": "app-gates-20260926T081331-546517532/mobile_audio_contract.log",
+      "log_sha256": "0f18651ab4aee50a0549cde4dfa9480b68caa127808d9e15dfbdd335d4101b7e",
+      "summaries": [
+        "Mobile audio lifecycle: 13/13; virtual contexts only, no physical iPhone claim",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    },
+    {
+      "suite": "mobile_recorded_audio_contract",
+      "kind": "node",
+      "exit_code": 0,
+      "seconds": 0.11,
+      "log": "app-gates-20260926T081331-546517532/mobile_recorded_audio_contract.log",
+      "log_sha256": "12833fc9eab4601fe391c678c5118a1ddacd2d16f4a25af851ee10694361c2bf",
+      "summaries": [
+        "Mobile recorded audio contracts: 12/12; native policy separately tested in WebKit",
+        "STAGED_OUTBOUND_ATTEMPTS 0"
+      ]
+    }
+  ]
+}
