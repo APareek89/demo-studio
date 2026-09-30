@@ -51,3 +51,6 @@ output/workflow-handoff-2026-09-19/final/application-sha256.json:generic-api-key
 samples/bmw-example/template.json:generic-api-key:8314
 # Reviewed Mock S3 object reference; protected by exact line hash in review metadata.
 evals/portfolio_auth_contract.py:generic-api-key:235
+# Bind the two new reviewed exceptions to their immutable launch commit.
+2d8c8ce1f971929298f3a6e53ca3f901599d5dca:samples/bmw-example/template.json:generic-api-key:8314
+2d8c8ce1f971929298f3a6e53ca3f901599d5dca:evals/portfolio_auth_contract.py:generic-api-key:235
