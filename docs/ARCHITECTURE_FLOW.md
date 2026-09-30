@@ -1,5 +1,7 @@
 # Architecture flow — Demo Studio
 
+26September conversational editorial checkpoint: only the existing Author, live reasoning/repair and registry-only FAQ/Q&A system strings change. They prioritize direct, warm, short connected speech while preserving budgets, conditions, citations, runtime acts and statement-led tours. No node, schema, tool, ownership or Mermaid flow change. Core445/24/smoke3, full mock28 and thirteen focused contracts pass; runtime conversation21 includes three new safety cases. [QA](qa/human-guide-prompts-2026-09-26.md) records exact counts and acoustic limits. Voice settings and published recordings are unchanged; this checkpoint is not an AWS release.
+
 Diagrams follow the Mindful Coding convention: one step per box, every box labelled
 `[AGENT · model]` (an LLM decides), `[FUNCTION]` (deterministic code), `[LIBRARY · name]` or
 `[DATA · store]`; decisions are diamonds with the decider on the diamond and the condition on the
@@ -160,3 +162,11 @@ Full-detail versions of 01–05 are in `docs/mermaid/` and rendered together in
 `docs/architecture-flow.html`.
 
 Runtime release25September: questionResult retains its250ms grace and existing speech/answer race, with a ten-phrase per-visit cycle and exact-text recorded-audio matching. Continue/Pause/Stop bypass this flow. runtime_source_urls reads enabled, top-level, non-excluded owner URLs each turn; crawl_active is build availability, not consent. Domain/SSRF and citation guards remain unchanged. The accepted LiveKit default preserves these runtime rules; the dated receipt records hosted network acceptance and cutover.
+
+## Portfolio access boundary — 30 September 2026
+
+The hosted HTTP boundary in `server/app.py` defaults private APIs to the signed-in creator and checks per-demo ownership before loading data. PostgreSQL in `portfolio_auth.py` holds bcrypt accounts, opaque creator sessions, stable browser visitor cookies, server-issued visits, immutable owner mappings and rate budgets. The normal validated Bundle registers its public version/snapshot and exact media allowlist. REST, LiveKit and WebSocket all require the same visit binding; arbitrary client session IDs are not authority. Published media is public only through its manifest; generated runtime audio is granted to the requesting visit. Recaps require the owning visitor or creator and the signed recap key. Background graph/summary jobs capture and recheck an immutable owner scope. See `mermaid/09-portfolio-access.mmd`.
+
+Rejected: browser-only gating, a shared operator password, inferring public status from a demo directory, and trusting client-supplied visit IDs. These would leave builder records or customer visits cross-user accessible. The existing agent nodes, evidence validation, six-card approvals, measured-duration gate, player gallery geometry and transport ownership remain. This paragraph describes implementation; local/live acceptance is tracked separately in Loop.MD.
+
+Cached example policy is selected only by the server-created record, never a request field. It bypasses generative answer/route/speech/summary work, disables live transports and serves exact prepared narration. Unknown questions get a clear prepared-content limit. Ten-copy hourly IP and owner budgets bound repeated example creation. The synthetic silent test template remains separate from the reviewed real-audio portfolio example.

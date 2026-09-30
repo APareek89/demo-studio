@@ -1,0 +1,97 @@
+/*
+ * Reusable component recipes based on measured Lovable dashboard primitives.
+ * Load tokens.css first; wrap your app in .lovable-ui.
+ * This is an original, portable approximation of observed components, not
+ * Lovable's component source. Geometry and semantic tokens follow the audit.
+ * Behavior (menus, dialogs, routing, validation) belongs in your framework.
+ */
+.lovable-ui { color:var(--fg-primary); background:var(--bg-base); font-family:var(--font-sans); font-size:16px; line-height:1.5; }
+.lovable-ui *, .lovable-ui *::before, .lovable-ui *::after { box-sizing:border-box; }
+.lovable-ui .ui-button {
+  display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  position:relative; height:32px; padding:6px 10px; border:0; border-radius:8px;
+  color:var(--fg-primary); background-color:var(--bg-translucent);
+  background-image:var(--gradient-button-neutral); box-shadow:var(--shadow-button-neutral);
+  font:400 14px/21px var(--font-sans); text-decoration:none; white-space:nowrap;
+  cursor:pointer; transition:filter 150ms cubic-bezier(.215,.61,.355,1),background-color 150ms;
+}
+.lovable-ui .ui-button.primary { background-color:var(--bg-accent); color:var(--fg-emphasis); background-image:var(--gradient-button-semantic); box-shadow:var(--shadow-button-accent); }
+.lovable-ui .ui-button.inverse { background-color:var(--bg-inverse); color:var(--fg-inverse); background-image:var(--gradient-button-inverse); box-shadow:var(--shadow-button-inverse); }
+.lovable-ui .ui-button.ghost { background:transparent; box-shadow:none; }
+.lovable-ui .ui-button.danger { background-color:var(--bg-destructive); color:var(--fg-emphasis); background-image:var(--gradient-button-semantic); box-shadow:var(--shadow-button-destructive); }
+.lovable-ui .ui-button.pill { border-radius:9999px; }
+.lovable-ui .ui-button.small { height:24px; padding:4px 8px; border-radius:6px; font-size:12px; line-height:18px; }
+.lovable-ui .ui-button.small.pill { border-radius:9999px; }
+.lovable-ui .ui-button.large { height:44px; padding:10px 14px; font-size:18px; line-height:27px; }
+.lovable-ui .ui-button.icon { width:32px; padding:0; flex-shrink:0; }
+.lovable-ui .ui-button.icon.small { width:24px; }
+.lovable-ui .ui-button.icon.large { width:44px; }
+.lovable-ui .ui-button svg { width:16px; height:16px; flex-shrink:0; }
+.lovable-ui .ui-button.large svg { width:22px; height:22px; }
+@media (hover:hover) {
+  .lovable-ui .ui-button:hover { filter:brightness(.97); transition-duration:0s; }
+  .lovable-ui .ui-button.ghost:hover { background:var(--glow-on-neutral-hover); filter:none; }
+}
+.lovable-ui .ui-button:active { filter:brightness(.92); }
+.lovable-ui .ui-button.ghost:active { background:var(--glow-on-neutral-pressed); filter:none; }
+.lovable-ui :is(.ui-button,.ui-input,.ui-menu-item,.ui-card,.ui-segments button):focus-visible { outline:2px solid var(--ring-color-focus-pulse); outline-offset:2px; }
+.lovable-ui :is(.ui-button,.ui-input):disabled { opacity:.5; cursor:not-allowed; filter:none; }
+.lovable-ui .ui-field { display:grid; gap:6px; min-width:0; }
+.lovable-ui .ui-field > label { font:450 14px/19.6px var(--font-sans); }
+.lovable-ui .ui-input {
+  min-width:0; width:100%; height:32px; border:0; border-radius:8px; padding:0 12px;
+  background-color:transparent; background-image:var(--gradient-input-fill);
+  box-shadow:var(--shadow-input-base), inset 0 0 0 var(--border-default) var(--border-primary);
+  font:400 14px/21px var(--font-sans); color:var(--fg-primary);
+}
+.lovable-ui .ui-input::placeholder { color:var(--fg-tertiary); }
+.lovable-ui .ui-input:hover { box-shadow:var(--shadow-input-base), inset 0 0 0 var(--border-default) var(--border-glow-on-surface-hover); }
+.lovable-ui .ui-input.pill { border-radius:9999px; }
+.lovable-ui .ui-input.large { height:44px; border-radius:12px; font-size:16px; line-height:24px; }
+.lovable-ui textarea.ui-input { height:auto; min-height:112px; padding:10px 12px; resize:vertical; }
+.lovable-ui .ui-input[aria-invalid=true] { box-shadow:var(--shadow-input-base), inset 0 0 0 var(--border-default) var(--border-destructive); }
+.lovable-ui .ui-help { color:var(--fg-tertiary); font:400 12px/18px var(--font-sans); }
+.lovable-ui .ui-help.error { color:var(--fg-destructive); }
+.lovable-ui .ui-card { position:relative; padding:8px; margin:-8px; border-radius:20px 20px 26px 26px; background:transparent; display:flex; flex-direction:column; gap:12px; }
+.lovable-ui .ui-card:hover { background:var(--glow-neutral-hover); }
+.lovable-ui .ui-card-preview { position:relative; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:var(--bg-depth); box-shadow:inset 0 0 0 var(--border-default) var(--border-translucent); }
+.lovable-ui .ui-card-preview img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.lovable-ui .ui-card-meta { display:flex; gap:8px; align-items:center; min-width:0; }
+.lovable-ui .ui-avatar { width:36px; height:36px; border-radius:9999px; display:grid; place-items:center; flex-shrink:0; background:var(--bg-muted); color:var(--fg-secondary); }
+.lovable-ui .ui-card-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:450 14px/19.6px var(--font-sans); }
+.lovable-ui .ui-card-caption { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--fg-secondary); font:400 14px/16px var(--font-sans); }
+.lovable-ui .ui-menu { min-width:128px; padding:4px; border-radius:12px; background:var(--bg-secondary); color:var(--fg-primary); box-shadow:var(--shadow-floating-md); }
+.lovable-ui .ui-menu-item { display:flex; align-items:center; gap:8px; width:100%; min-height:32px; padding:4px 8px; border:0; border-radius:8px; background:transparent; text-align:left; color:var(--fg-primary); font:400 14px/21px var(--font-sans); cursor:pointer; }
+.lovable-ui .ui-menu-item:hover { background:var(--glow-on-neutral-hover); }
+.lovable-ui .ui-menu-item.danger { color:var(--fg-destructive); }
+.lovable-ui .ui-menu-item:disabled { opacity:.5; cursor:not-allowed; }
+.lovable-ui .ui-menu hr { height:var(--border-default); border:0; background:var(--border-secondary); margin:4px; }
+.lovable-ui .ui-dialog { max-width:min(448px,calc(100vw - 48px)); width:100%; max-height:90dvh; overflow:auto; padding:24px; border:0; border-radius:24px; background:var(--bg-secondary); color:var(--fg-primary); box-shadow:var(--shadow-floating-lg); }
+.lovable-ui .ui-dialog::backdrop { background:oklch(0% 0 0/.6); }
+.lovable-ui .ui-dialog h2 { font:450 18px/23.4px var(--font-sans); letter-spacing:-.005em; margin:0; }
+.lovable-ui .ui-dialog p { color:var(--fg-secondary); font:400 14px/21px var(--font-sans); }
+.lovable-ui .ui-dialog-actions { display:flex; gap:8px; margin-top:24px; }
+.lovable-ui .ui-dialog-actions .ui-button { flex:1; }
+.lovable-ui .ui-badge { display:inline-flex; gap:4px; align-items:center; padding:2px 6px; border-radius:6px; background:var(--bg-muted); color:var(--fg-secondary); font:400 12px/18px var(--font-sans); }
+.lovable-ui .ui-badge.positive { background:var(--bg-positive-translucent); color:var(--fg-positive); }
+.lovable-ui .ui-badge.attention { background:var(--bg-attention-translucent); color:var(--fg-attention); }
+.lovable-ui .ui-badge.danger { background:var(--bg-destructive-translucent); color:var(--fg-destructive); }
+.lovable-ui .ui-badge.special { background:var(--bg-special-translucent); color:var(--fg-special); }
+.lovable-ui .ui-switch { appearance:none; display:inline-block; vertical-align:middle; width:32px; height:20px; margin:0; padding:0; position:relative; border:0; border-radius:10px; background:var(--bg-muted); box-shadow:var(--shadow-switch-track); cursor:pointer; }
+.lovable-ui .ui-switch::after { content:''; position:absolute; width:16px; height:16px; top:2px; left:2px; border-radius:50%; background:oklch(100% 0 0); box-shadow:var(--shadow-switch-thumb); transition:transform 150ms cubic-bezier(.215,.61,.355,1); }
+.lovable-ui .ui-switch:checked { background:var(--bg-accent); }
+.lovable-ui .ui-switch:checked::after { transform:translateX(12px); }
+.lovable-ui .ui-switch:focus-visible { outline:2px solid var(--ring-color-focus-pulse); outline-offset:2px; }
+.lovable-ui .ui-switch:disabled { opacity:.5; cursor:not-allowed; }
+.lovable-ui .ui-segments { display:inline-flex; padding:2px; border-radius:9999px; background:var(--bg-muted); box-shadow:var(--shadow-switch-track); }
+.lovable-ui .ui-segments button { border:0; border-radius:9999px; min-width:48px; height:24px; padding:0 8px; font:400 14px/21px var(--font-sans); color:var(--fg-tertiary); background:transparent; cursor:pointer; }
+.lovable-ui .ui-segments button[aria-pressed=true], .lovable-ui .ui-segments button[aria-selected=true] { color:var(--fg-primary); background:var(--bg-secondary); box-shadow:var(--shadow-surface-xs); }
+.lovable-ui .ui-panel { background:var(--bg-primary); border-radius:16px; box-shadow:var(--shadow-surface-xl); }
+.lovable-ui .ui-inset { background:var(--bg-depth); border-radius:12px; padding:16px; }
+.lovable-ui .ui-grid { display:grid; grid-template-columns:1fr; gap:20px 16px; }
+@media(min-width:640px) { .lovable-ui .ui-grid {grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media(min-width:700px) { .lovable-ui .ui-grid {column-gap:24px;} }
+@media(min-width:1024px) { .lovable-ui .ui-grid {grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media(max-width:767px) { .lovable-ui .ui-input {font-size:16px;line-height:24px;} }
+@media(pointer:coarse) { .lovable-ui .ui-menu-item {min-height:48px;padding-block:12px;} .lovable-ui .ui-button {min-height:44px;} .lovable-ui .ui-button.icon {min-width:44px;} }
+@media(prefers-reduced-motion:reduce) { .lovable-ui .ui-button,.lovable-ui .ui-switch::after {transition:none;} }

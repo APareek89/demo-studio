@@ -25,3 +25,7 @@ pdfplumber>=0.11
 
 # Default Demo Run transport, shared by local and hosted playback.
 -r requirements-livekit.txt
+
+# Hosted creator accounts and isolated PostgreSQL ownership/session registry.
+bcrypt==4.3.0
+psycopg[binary]==3.2.10

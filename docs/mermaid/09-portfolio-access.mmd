@@ -1,0 +1,20 @@
+%% 09 · Portfolio creator and visitor access — 30 September 2026
+flowchart TD
+  SIGNIN["[FUNCTION] Email/password signup or sign-in<br/>Origin check, rate budget, bcrypt"] --> SESSION["[DATA] PostgreSQL users and opaque cookie sessions"]
+  REQUEST["[FUNCTION] API request"] --> GATE{"[FUNCTION] Private builder or public playback?"}
+  SESSION --> OWNER{"[FUNCTION] Signed-in user owns demo?"}
+  GATE -->|"builder / metrics / source files"| OWNER
+  OWNER -->|"yes"| WORKFLOW["[FUNCTION] Existing Sources → Read → six Align approvals → Voice → Bundle"]
+  OWNER -->|"no"| DENY["[FUNCTION] Reject before private data access"]
+  WORKFLOW --> PUBLISH["[DATA] Validated publication version, knowledge snapshot and media allowlist"]
+  GATE -->|"published playback"| VISIT["[FUNCTION] Issue server visit ID<br/>Bind browser cookie, demo, version and snapshot"]
+  PUBLISH --> VISIT
+  VISIT --> VERIFY{"[FUNCTION] Cookie and exact visit binding valid?"}
+  VERIFY -->|"yes"| EXAMPLE{"[FUNCTION] Server record marks cached example?"}
+  EXAMPLE -->|"yes"| CACHED["[FUNCTION] Prepared narration, literal evidence answers and deterministic recap<br/>No microphone or provider invocation"]
+  CACHED --> SAVE
+  EXAMPLE -->|"no"| RUNTIME["[FUNCTION] Existing REST / LiveKit / WebSocket runtime"]
+  VERIFY -->|"no / stale version"| DENY
+  RUNTIME --> SAVE["[DATA] Same-visit transcript, recap and runtime media grants"]
+  WORKFLOW --> JOB["[FUNCTION] Capture immutable demo/owner job scope"]
+  JOB --> CHECK["[FUNCTION] Recheck ownership before background execution"]

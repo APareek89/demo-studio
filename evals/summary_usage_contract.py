@@ -67,16 +67,17 @@ def run(check):
 
             def failed(did, session):
                 usage.trace("runtime", "gemini-3.8-flash", latency_ms=1, error="Fixture provider failed")
-                raise RuntimeError("Fixture provider failed")
+                raise RuntimeError("Fixture provider failed: credential-like-content-must-not-echo")
             with patch.object(routes._summary, "summarize", side_effect=failed):
                 revised = backend.get_session(ids[1], "s_fixture")
                 revised.pop("summary", None)
                 revised["profile"] = {"why": "Different input whose new summary attempt fails"}
                 backend.put_session(ids[1], revised)
                 routes._summarize_session(ids[1], "s_fixture")
-                check("summary usage: failure trace remains attributed and session keeps its error",
+                check("summary usage: failure trace remains attributed while session receives a safe error",
                       any(r.get("error") == "Fixture provider failed" for r in rows(ids[1], "trace.jsonl"))
-                      and backend.get_session(ids[1], "s_fixture")["summary"]["error"] == "Fixture provider failed")
+                      and backend.get_session(ids[1], "s_fixture")["summary"]["error"] == "The visit summary could not finish."
+                      and "credential-like-content" not in json.dumps(backend.get_session(ids[1], "s_fixture")))
                 check("summary usage: failure also restores caller context",
                       (usage.current_demo.get(), usage.current_stage.get()) == ("parent-demo", "parent-stage"))
         finally:

@@ -343,6 +343,37 @@ class FAQCacheContract(unittest.TestCase):
         self.assertTrue(any(unknown["question"] in gap.get("what", "") for gap in playbook["evidence_gaps"]))
         self.assertEqual(store.read_json(self.did, "understanding.json")["facts"], self.und["facts"])
 
+    def test_hosted_customer_cache_is_private_to_verified_visit(self):
+        from server import portfolio_auth
+        with patch.object(portfolio_auth, "enabled", return_value=True):
+            a = faq.cache_answer(self.did, self.q, self.result, snapshot_id=self.sid,
+                                 registry_hash=self.fingerprint, session_id="visit-a")
+            self.assertIsNotNone(a)
+            self.assertIsNone(self.hit(session_id="visit-b"))
+            self.assertIsNone(self.hit())
+            self.assertEqual(self.hit(session_id="visit-a")["id"], a["id"])
+            b = faq.cache_answer(self.did, self.q, self.result, snapshot_id=self.sid,
+                                 registry_hash=self.fingerprint, session_id="visit-b")
+            self.assertNotEqual(a["id"], b["id"])
+            self.assertEqual(self.hit(session_id="visit-a")["id"], a["id"])
+            self.assertEqual(self.hit(session_id="visit-b")["id"], b["id"])
+            self.assertIsNone(faq.cache_answer(self.did, self.q, self.result, snapshot_id=self.sid))
+
+    def test_hosted_published_faq_remains_shared_until_next_build(self):
+        from server import portfolio_auth
+        entry = self.cache()
+        bank = store.read_json(self.did, "faq.json")
+        bank["entries"][0]["reviewed"] = True
+        store.write_json(self.did, "faq.json", bank)
+        store.write_json(self.did, "bundle.json", {"knowledge_snapshot_id": self.sid, "faq": [entry]})
+        with patch.object(portfolio_auth, "enabled", return_value=True):
+            self.assertEqual(self.hit(session_id="another-visit")["answer"], entry["answer"])
+            bank["entries"][0]["answer"] = "An unpublished replacement answer."
+            store.write_json(self.did, "faq.json", bank)
+            self.assertEqual(self.hit(session_id="another-visit")["answer"], entry["answer"])
+            store.write_json(self.did, "faq.json", {"entries": [{**entry, "source": "document", "answer": "A new document draft."}]})
+            self.assertEqual(self.hit(session_id="another-visit")["answer"], entry["answer"])
+
     def test_rehearsal_endpoint_starts_only_explicitly(self):
         from fastapi.testclient import TestClient
         from server import graph

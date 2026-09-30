@@ -21,6 +21,11 @@ GRAPH_DB.parent.mkdir(parents=True, exist_ok=True)
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 RUNWARE_API_KEY = os.getenv("RUNWARE_API_KEY", "").strip()
+PIXELBIN_API_TOKEN = os.getenv("PIXELBIN_API_TOKEN", "").strip()
+MEDIA_PROVIDER_ORDER = list(dict.fromkeys(p.strip().lower() for p in os.getenv("MEDIA_PROVIDER_ORDER", "runware,pixelbin").split(",") if p.strip()))
+if not MEDIA_PROVIDER_ORDER or set(MEDIA_PROVIDER_ORDER) - {"runware", "pixelbin"}:
+    raise ValueError("MEDIA_PROVIDER_ORDER must list runware and/or pixelbin")
+RUNWARE_IMAGE_MODEL = os.getenv("RUNWARE_IMAGE_MODEL", "google:4@3").strip() or "google:4@3"
 GCLOUD_TTS_API_KEY = os.getenv("GCLOUD_TTS_API_KEY", "").strip()
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "").strip()
 SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3").strip() or "bulbul:v3"  # v2 deprecated Sep 2026
@@ -94,6 +99,9 @@ def health() -> dict:
         "anthropic": bool(ANTHROPIC_API_KEY),
         "gemini": bool(GEMINI_API_KEY),
         "runware": bool(RUNWARE_API_KEY),
+        "pixelbin": bool(PIXELBIN_API_TOKEN),
+        "media_provider_order": MEDIA_PROVIDER_ORDER,
+        "runware_image_model": RUNWARE_IMAGE_MODEL,
         "gcloud_tts": bool(GCLOUD_TTS_API_KEY),
         "storage": STORAGE_BACKEND,
         "sarvam": bool(SARVAM_API_KEY),

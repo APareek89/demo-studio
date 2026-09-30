@@ -31,10 +31,21 @@ from .runtime_emi_delivery import append_missing_emi_terms
 from .runtime_tables import unsupported_live_table_universal
 
 
-SYSTEM = """You are the helpful, warm guide in a live car demo. You have a real conversation: understand the current
-question and its earlier context, answer directly in everyday language, and wait when clarification is necessary.
-Use a cheerful but restrained speaking style, contractions and short varied sentences. Do not sound like a brochure.
-Do not praise every question, repeat intake, append a ritual satisfaction question or invent customer preferences.
+SYSTEM = """You are a helpful, warm, approachable guide speaking with one visitor in a live car demo.
+Answer the visitor's current question first, using their earlier context only where it actually helps. A polished
+or authoritative persona means courteous and precise, not formal brochure language. Prefer one or two short,
+connected sentences within the limits below; give each sentence one clear thought rather than a list of specs.
+Use contractions and vary sentence length naturally. Full stops and commas give the speaker room to breathe;
+avoid semicolon or em-dash chains, decorative punctuation, forced fillers and theatrical enthusiasm.
+Write numbers in natural spoken form where appropriate, retaining their exact values, units, scope and conditions.
+Keep any material qualification with the claim it limits, even when that needs a longer answer within the limits.
+Do not repeat the question before answering, praise every question, repeat intake or append a satisfaction question.
+Warmth should come from the helpful answer itself, not a stock opener or an extra uncited context sentence.
+Acknowledge only context the visitor actually supplied; never imply they agreed, understood or stated a preference.
+Use the existing conversational acts below for their defined purposes. If asked again, explain the same supported
+point more simply instead of repeating your previous reply verbatim; preserve every qualification and citation.
+Ask one question and wait only when clarification is necessary. Ordinary answers end as statements; the player
+owns the listening window and return to the tour. Do not add a booking, contact request or another discovery turn.
 
 PLAIN LANGUAGE. The listener is an everyday buyer. Use ordinary words. The only technical terms you may use are: cc, hp, turbo, diesel, petrol, automatic, manual, dual clutch, airbags, sunroof, touchscreen, cruise control, alloy wheels, ground clearance, suspension, torque, gearbox, range, battery. Never use component or engineering names such as McPherson strut, torsion beam, GDi, IVT, ADAS, ESC, TPMS, NVH; say what kind of thing it is in plain words instead (a strut-type front suspension, an automatic gearbox, driver-assistance features). If the customer explicitly asks for the technical specification, you may give the exact term with its citation.
 
@@ -1830,13 +1841,13 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
                 "snapshot_id": state["snapshot_id"], "provider_failed": False, "repair_failed": False,
                 "tool_results": [], "validation_errors": []}
         hit = None if visual_result or kind != "qa" or body.get("skip_bank") else faq.match(
-            demo_id, state["question"], snapshot_id=state["snapshot_id"], registry_hash=registry_hash)
+            demo_id, state["question"], snapshot_id=state["snapshot_id"], registry_hash=registry_hash, session_id=sid)
         control.remaining()
         if hit:
             retrieved, cached_result = await _validated_bank_result(state, hit)
             if cached_result is not None:
                 hit = faq.match(demo_id, state["question"], snapshot_id=state["snapshot_id"],
-                                registry_hash=registry_hash, increment=True, expected=hit)
+                                registry_hash=registry_hash, increment=True, expected=hit, session_id=sid)
                 if hit:
                     state.update(retrieved)
             else:
@@ -1872,7 +1883,7 @@ async def run_turn(demo_id: str, body: dict, *, kind: str = "qa") -> dict:
                             entry = None
                         else:
                             entry = faq.match(demo_id, state["question"], snapshot_id=pin,
-                                              registry_hash=faq._registry_hash(demo_id, snapshot_id=pin), expected=entry)
+                                              registry_hash=faq._registry_hash(demo_id, snapshot_id=pin), expected=entry, session_id=sid)
                             if entry:
                                 accepted_facts = reviewed["facts"]
                     if entry:

@@ -541,6 +541,28 @@ graph TD;
 	classDef first fill-opacity:0
 	classDef last fill:#bfb6fc
 </pre>
+<h2>09 · Portfolio creator and visitor access — 30 September 2026</h2>
+<pre class="mermaid">%% 09 · Portfolio creator and visitor access — 30 September 2026
+flowchart TD
+  SIGNIN[&quot;[FUNCTION] Email/password signup or sign-in&lt;br/&gt;Origin check, rate budget, bcrypt&quot;] --&gt; SESSION[&quot;[DATA] PostgreSQL users and opaque cookie sessions&quot;]
+  REQUEST[&quot;[FUNCTION] API request&quot;] --&gt; GATE{&quot;[FUNCTION] Private builder or public playback?&quot;}
+  SESSION --&gt; OWNER{&quot;[FUNCTION] Signed-in user owns demo?&quot;}
+  GATE --&gt;|&quot;builder / metrics / source files&quot;| OWNER
+  OWNER --&gt;|&quot;yes&quot;| WORKFLOW[&quot;[FUNCTION] Existing Sources → Read → six Align approvals → Voice → Bundle&quot;]
+  OWNER --&gt;|&quot;no&quot;| DENY[&quot;[FUNCTION] Reject before private data access&quot;]
+  WORKFLOW --&gt; PUBLISH[&quot;[DATA] Validated publication version, knowledge snapshot and media allowlist&quot;]
+  GATE --&gt;|&quot;published playback&quot;| VISIT[&quot;[FUNCTION] Issue server visit ID&lt;br/&gt;Bind browser cookie, demo, version and snapshot&quot;]
+  PUBLISH --&gt; VISIT
+  VISIT --&gt; VERIFY{&quot;[FUNCTION] Cookie and exact visit binding valid?&quot;}
+  VERIFY --&gt;|&quot;yes&quot;| EXAMPLE{&quot;[FUNCTION] Server record marks cached example?&quot;}
+  EXAMPLE --&gt;|&quot;yes&quot;| CACHED[&quot;[FUNCTION] Prepared narration, literal evidence answers and deterministic recap&lt;br/&gt;No microphone or provider invocation&quot;]
+  CACHED --&gt; SAVE
+  EXAMPLE --&gt;|&quot;no&quot;| RUNTIME[&quot;[FUNCTION] Existing REST / LiveKit / WebSocket runtime&quot;]
+  VERIFY --&gt;|&quot;no / stale version&quot;| DENY
+  RUNTIME --&gt; SAVE[&quot;[DATA] Same-visit transcript, recap and runtime media grants&quot;]
+  WORKFLOW --&gt; JOB[&quot;[FUNCTION] Capture immutable demo/owner job scope&quot;]
+  JOB --&gt; CHECK[&quot;[FUNCTION] Recheck ownership before background execution&quot;]
+</pre>
 <script type="module">
 import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 mermaid.initialize({ startOnLoad:false, securityLevel:"loose", theme:"base",

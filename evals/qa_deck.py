@@ -365,7 +365,7 @@ check("a lead records the consent line it was shown", ld["ok"] and ld["lead"]["c
 check("leads and sessions on the demo record come through the storage interface", len(c.get(f"/api/demos/{i}").json().get("leads", [])) >= 1 and any(x["id"] == "s_p7" for x in c.get(f"/api/demos/{i}").json().get("sessions", [])))
 pj = c.get("/web/player/player.js").text; aj = c.get("/web/app.js").text
 check("player: one line of consent is shown before a number is saved, and sent with the lead", "By sharing your number you agree" in pj and "consent: true, consent_text: CONSENT" in pj)
-check("player: one session id per visit; Done, Stop and the tab-close beacon update the same record", "sessionId: newSessionId()" in pj and 'window.addEventListener("pagehide", onHide)' in pj and "navigator.sendBeacon(" in aj)
+check("player: one session id per visit; Done, Stop and the tab-close beacon update the same record", "sessionId: api.sessionId || newSessionId()" in pj and 'window.addEventListener("pagehide", onHide)' in pj and "navigator.sendBeacon(" in c.get("/web/player/visit-api.js").text and "id: S.sessionId" in pj)
 check("Studio has a Sessions page and a read-only share route", 'key: "sessions"' in aj and 'parts[0] === "share"' in aj and "renderShare" in c.get("/web/studio/sessions.js").text)
 check("local media is still served by the app (no redirect without a signed URL)", c.get(f"/media/{i}/does-not-exist.png").status_code == 404 and _storage.backend().media_url(i, "x.png") is None)
 check("the instance-role policy names only the bucket and the three tables, no IAM", (lambda pol: all(a.split(":")[0] in ("sts", "s3", "dynamodb") for s in pol["Statement"] for a in s["Action"]))(json.load(open("docs/aws/instance-role-policy.json"))))

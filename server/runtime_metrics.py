@@ -32,9 +32,9 @@ def response_kind(row):
     return "legacy_all_responses"
 
 
-def aggregate(demo_id: str | None = None) -> dict:
+def aggregate(demo_id: str | None = None, *, demo_ids: set[str] | None = None) -> dict:
     groups=defaultdict(list);interruptions=[];sessions=0
-    ids=[demo_id] if demo_id else [d["id"] for d in store.list_demos()]
+    ids=[demo_id] if demo_id else sorted(demo_ids) if demo_ids is not None else [d["id"] for d in store.list_demos()]
     for did in ids:
         for session in storage.backend().iter_sessions(did):
             sessions+=1

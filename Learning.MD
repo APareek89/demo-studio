@@ -1,5 +1,31 @@
 # Learning.MD — Demo Studio
 
+## 30 September 2026 — Hosted boundaries and browser module parsing
+
+A browser-only account gate would leave demo IDs, visitor sessions and background jobs exposed. Ownership now lives in PostgreSQL; private routes check the verified creator, and public runtime requests bind server-issued IDs to a cookie and immutable publication. Cached examples require a server policy for QA, voice, summaries and live transports: a UI “free” label alone cannot prevent hidden spending.
+
+The new home hero had one extra closing parenthesis. Plain `node --check file.js` returned success under the local ambiguous module mode, while the browser and `node --input-type=module --check < file.js` correctly rejected it. Parse browser ES modules explicitly; the served-file reproduction and failed gate remain preserved. Theme review also found a hardcoded white Rehearse feedback surface under dark text tokens; use semantic surfaces on nested docks and bubbles as well as the page shell.
+
+The former player assertion required the literal client-generated ID initializer. It was updated to the server-issued initializer; the visit adapter behavior test additionally proves separate visits, restart, late old-visit saves and beacon identity. Summary errors now retain internal type/attribution while returning a fixed safe message, with a credential-like exception regression case.
+
+## 30 September 2026 — Cached examples need a complete product boundary
+
+The recorded BMW example initially exposed dealership follow-up and personalized intake despite allowing only prepared content. Its single-token engine question also missed the published engine fact because retrieval required two overlapping tokens. The correction removes example CTAs and rejects lead writes on the server, routes welcome and Restart directly into prepared playback, hides unsupported microphone/website paths, and ranks literal claim matches while preserving fact conditions. The unsupported answer now describes the actual prepared-content limit. Ordinary creator demos retain their workflow. A 40-second verified S3 copy also needed visible feedback: the button now says “Preparing example…” and exposes a busy state while preserving retry behavior.
+
+Release evidence must separate transport from providers and listening. Muted native LiveKit typed QA verifies delivery and saved state; it does not verify microphones or acoustic quality. The real HTTP Build regenerated exactly one 16-character Sarvam filler and reused 50 recordings. Its 1.195 s clip and unchanged 122.64 s main route establish that bounded Voice→Bundle path, not a fully uncached generation. Retain the request/usage count, unchanged-file hashes and assumed-FX cost estimate without calling the estimate an invoice. The original BMW deployment and failed test evidence stay unchanged.
+
+## 26 September 2026 — Human delivery needs concrete speaking instructions
+
+**Symptom:** Anand found the Samvaad showroom conversation more human, but heard no useful difference in the same-recording bitrate comparison and considered Sumit as good as Shubh. **Why1:** audio fidelity does not establish conversational delivery. **Why2:** a warm persona label does not directly instruct Sarvam's acoustic acting. **Why3:** our existing conversational instructions still allowed dense specification chains and uniform sentence rhythm. **Why4:** short delivery budgets and source qualifications can crowd the prose unless the writer deliberately simplifies its sentence structure without losing conditions. **Why5 (process/knowledge gap):** prompt and mock checks had been confused with evidence of perceived naturalness. These are plausible contributors, not a measured allocation of acoustic causes.
+
+**Action:** refine existing Author/live/FAQ editorial prompts using the user's inspected agent's plain, approachable style: answer first, connected short thoughts, full stops/commas, natural numbers, no compulsory praise, assumed agreement or fabricated context. Keep our tour statements, source/condition/CTA guards and all voice settings. Do not copy its product facts or lead-collection behavior. Three additional validator cases protect direct speech, spoken quantities/scope and rejection of invented customer benefits/context. **Prevention:** report whether a change affects future generated text, existing cached/recorded text, or acoustic settings; label mock results as behavioral checks, never listening acceptance. Keep reviewed cached answers exact. [Receipt](docs/qa/human-guide-prompts-2026-09-26.md).
+
+## 26 September 2026 — Audio bitrate is not expressive delivery
+
+**Symptom:** the much more natural Sarvam demo was attributed to a missing `output_audio_bitrate: "128K"` setting. **Why-chain:** our configuration explanation listed codec/sample rate without the derived uncompressed bitrate; an omitted encoding parameter looked like a missing quality control; compressed bitrate and expressive delivery are different controls. Sarvam documents lowercase `128k` as the streaming default already. Existing BMW narration is mono PCM16 WAV at22050Hz (352.8kbps), and live speech is mono PCM16 at24000Hz (384kbps).
+
+**Correction:** make the existing128k provider default explicit in the streaming request, retaining linear16, its sample rate and the decoder contract. A local BMW comparison encodes the same approved recordings as128kbps MP3; changing the words, speaker, temperature or resynthesizing would confound the bitrate comparison. Do not present an encoder setting as an improvement to naturalness or silently put MP3 bytes into a PCM decoder. Production recordings remain lossless. **Prevention:** mocked wire contracts check the explicit field and exact preserved PCM bytes on both completion and cancellation; listening comparisons state whether audio was regenerated or merely encoded. No paid synthesis is required to isolate compression.
+
 
 ## 26 September 2026 — Mobile playback requires browser-policy tests
 

@@ -7,9 +7,9 @@ import re
 import time
 from urllib.parse import urlsplit
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
-from . import store, usage
+from . import store, usage, portfolio_auth as auth
 from .runtime_delivery import DeliveryCoordinator
 from .runtime_graph import run_turn
 from .runtime_state import cancel_turn, safe_id
@@ -25,21 +25,36 @@ def meaningful_transcript(text) -> bool:
 
 @router.websocket("/api/demos/{demo_id}/run/live")
 async def live(websocket: WebSocket, demo_id: str):
+    bound_session = websocket.query_params.get("session_id") or ""
+    visit_binding = None
+    if auth.enabled():
+        try:
+            auth.check_origin(websocket)
+            visit_binding = await asyncio.to_thread(auth.require_visit, websocket, demo_id, bound_session)
+        except (HTTPException, RuntimeError):
+            await websocket.close(code=1008); return
     if not store.exists(demo_id):
         await websocket.close(code=1008); return
+    from .portfolio_example import is_cached_only
+    if is_cached_only(demo_id):
+        await websocket.close(code=1008, reason="This cached example supports typing and recorded narration; live voice is unavailable.")
+        return
     origin = websocket.headers.get("origin")
     if origin and urlsplit(origin).netloc != websocket.headers.get("host"):
         await websocket.close(code=1008); return
     await websocket.accept()
-    session_id = safe_id(websocket.query_params.get("session_id") or "s_"+str(time.time_ns()))
+    session_id = bound_session if auth.enabled() else safe_id(bound_session or "s_"+str(time.time_ns()))
     send_lock = asyncio.Lock()
     current_turn, language, input_mode = "", "en-IN", "text"
     stt, stt_task, turn_task = None,None,None
     input_generation = 0
+    mic_started = 0.0
+    mic_encoded_bytes = 0
     closed = False
 
     async def send(event):
         if not closed:
+            await asyncio.to_thread(auth.grant_response_audio, websocket, demo_id, session_id, event)
             async with send_lock:
                 await websocket.send_json({"session_id":session_id,"server_time":time.time(),**event})
 
@@ -96,13 +111,17 @@ async def live(websocket: WebSocket, demo_id: str):
             await adapter.aclose()
 
     async def start_mic(generation):
-        nonlocal stt,stt_task,input_generation,input_mode
+        nonlocal stt,stt_task,input_generation,input_mode,mic_started,mic_encoded_bytes
         if generation <= input_generation:
             if generation == input_generation and stt:
                 await send({"type":"mic.ready","input_generation":generation,"input_mode":"voice"})
             return
         await stop_mic()
+        await asyncio.to_thread(auth.limit_action, websocket, "runtime-microphone", 6, 900)
+        if visit_binding:
+            await asyncio.to_thread(auth.require_visit, websocket, demo_id, bound_session)
         input_generation = generation
+        mic_started, mic_encoded_bytes = time.monotonic(), 0
         from .llm.sarvam_stream import RealtimeSTT
         candidate = RealtimeSTT(language=language)
         try:
@@ -120,6 +139,11 @@ async def live(websocket: WebSocket, demo_id: str):
     async def answer(body: dict):
         tid = body["turn_id"]
         try:
+            if visit_binding:
+                await asyncio.to_thread(auth.require_visit, websocket, demo_id, bound_session)
+                body = {**body, "snapshot_id": visit_binding["snapshot_id"],
+                        "knowledge_snapshot_id": visit_binding["snapshot_id"],
+                        "demo_version": visit_binding["published_version"]}
             final = await run_turn(demo_id,{**body,"session_id":session_id})
             if tid!=current_turn: return
             delivery.register(final["delivery"])
@@ -144,6 +168,8 @@ async def live(websocket: WebSocket, demo_id: str):
             kind=message.get("type")
             if kind=="session.start":
                 requested=message.get("session_id")
+                if auth.enabled() and requested and requested != bound_session:
+                    await websocket.close(code=1008); break
                 if requested and not current_turn: session_id=safe_id(requested)
                 language=str(message.get("language") or "en-IN")[:20]
                 input_mode = message.get("input_mode") if message.get("input_mode") in ("voice","text") else "voice" if message.get("mic") is True else "text"
@@ -160,6 +186,11 @@ async def live(websocket: WebSocket, demo_id: str):
             elif kind=="audio.input":
                 data=message.get("audio","")
                 if stt and message.get("input_generation") == input_generation and isinstance(data,str) and len(data)<=90_000:
+                    mic_encoded_bytes += len(data)
+                    if auth.enabled() and (time.monotonic() - mic_started > 120 or mic_encoded_bytes > 5_120_000):
+                        await stop_mic()
+                        await send({"type":"error","code":"microphone_limit","message":"Voice input reached its limit. Start the microphone again or type."})
+                        continue
                     try: await stt.send_audio(data)
                     except Exception: await stop_mic(); await send({"type":"error","code":"microphone_stream","message":"Voice input disconnected. Please retry or type.","input_generation":input_generation})
             elif kind=="turn.interrupt":
@@ -167,6 +198,17 @@ async def live(websocket: WebSocket, demo_id: str):
                 current_turn=safe_id(message.get("turn_id") or "t_"+str(time.time_ns()),"t")
                 await send({"type":"turn.cancelled","turn_id":current_turn})
             elif kind=="turn.ask":
+                if visit_binding:
+                    if (message.get("session_id", bound_session) != bound_session
+                            or message.get("snapshot_id", visit_binding["snapshot_id"]) != visit_binding["snapshot_id"]
+                            or message.get("knowledge_snapshot_id", visit_binding["snapshot_id"]) != visit_binding["snapshot_id"]
+                            or message.get("demo_version", visit_binding["published_version"]) != visit_binding["published_version"]):
+                        await send({"type":"error","code":"visit_mismatch","message":"The demo visit changed. Reload before asking."})
+                        continue
+                    if len(str(message.get("question") or "")) > 4000:
+                        await send({"type":"error","code":"question_limit","message":"Please shorten your question."})
+                        continue
+                    await asyncio.to_thread(auth.limit_action, websocket, "runtime-question", 30, 900)
                 await stop_turn(preserve_planning=True)
                 current_turn=safe_id(message.get("turn_id") or "t_"+str(time.time_ns()),"t")
                 message["turn_id"]=current_turn
@@ -174,12 +216,16 @@ async def live(websocket: WebSocket, demo_id: str):
                 turn_task=asyncio.create_task(answer(message))
             elif kind=="delivery.request":
                 if message.get("turn_id")==current_turn:
+                    await asyncio.to_thread(auth.limit_action, websocket, "runtime-delivery", 60, 900)
                     await delivery.request(str(message.get("utterance_id","")),current_turn)
             elif kind=="delivery.cancel":
                 await delivery.cancel_utterance(str(message.get("turn_id","")),str(message.get("utterance_id","")))
             elif kind=="delivery.speak":
                 text=str(message.get("text") or "").strip()
                 if text and len(text)<=2000:
+                    await asyncio.to_thread(auth.limit_action, websocket, "runtime-speech", 30, 900)
+                    if visit_binding:
+                        await asyncio.to_thread(auth.require_visit, websocket, demo_id, bound_session)
                     # Same endpoint capability as existing /run/tts; output voice
                     # is selected by this demo, not by arbitrary client settings.
                     tid=str(message.get("turn_id") or current_turn)
@@ -191,6 +237,8 @@ async def live(websocket: WebSocket, demo_id: str):
                 usage.trace("runtime-"+kind,"browser",latency_ms=0,response=json.dumps({k:message.get(k) for k in ("turn_id","utterance_id","completed","client_time")}))
             elif kind=="session.end":
                 break
+    except HTTPException:
+        await websocket.close(code=1008)
     except WebSocketDisconnect:
         pass
     finally:

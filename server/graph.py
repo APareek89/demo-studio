@@ -387,10 +387,12 @@ def _run(demo_id: str, payload, phase: str) -> None:
 # Input: demo ID, payload and phase. Output: a running thread registered for that demo.
 # Linked: server/app.py read/build/revise routes return while server/events.py streams progress.
 def _spawn(demo_id: str, payload, phase: str) -> None:
+    from . import portfolio_auth as auth
+    scope = auth.capture_job_scope(demo_id)
     with _lock:
         if is_running(demo_id):
             raise RuntimeError("This demo is already being processed — wait for it to finish")
-        t = threading.Thread(target=_run, args=(demo_id, payload, phase), daemon=True, name=f"graph-{demo_id}")
+        t = threading.Thread(target=auth.run_scoped_job, args=(scope, _run, demo_id, payload, phase), daemon=True, name=f"graph-{demo_id}")
         _threads[demo_id] = t
         t.start()
 
@@ -442,12 +444,14 @@ def _run_rehearsal(demo_id: str) -> None:
 
 def start_rehearsal(demo_id: str) -> None:
     """Serialize an explicit rehearsal with Read/Build without resuming their graph."""
+    from . import portfolio_auth as auth
+    scope = auth.capture_job_scope(demo_id)
     with _lock:
         if is_running(demo_id):
             raise RuntimeError("This demo is already being processed — wait for it to finish")
         if not (store.read_json(demo_id, "script.json") or {}).get("segments"):
             raise RuntimeError("Prepare a script before rehearsing")
-        worker = threading.Thread(target=_run_rehearsal, args=(demo_id,), daemon=True, name=f"rehearsal-{demo_id}")
+        worker = threading.Thread(target=auth.run_scoped_job, args=(scope, _run_rehearsal, demo_id), daemon=True, name=f"rehearsal-{demo_id}")
         _threads[demo_id] = worker
         worker.start()
 

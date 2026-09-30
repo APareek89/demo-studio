@@ -103,14 +103,16 @@ function customerUrls(text, limit = 8) {
 // Build one interactive demo from a host element, published bundle and API callbacks.
 // Return lifecycle methods for web/app.js:renderPlay; all visit state stays inside this player.
 export function mountPlayer(host, bundle, api) {
+  const cachedExample = !!bundle.example?.cached_only;
+  if (cachedExample) bundle = { ...bundle, ctas: [] };
   const mutedByDefault = ["1", "true", "on"].includes(new URLSearchParams(window.location.search).get("mute"));
   const walkthroughEnabled = new URLSearchParams(window.location.search).get("presentation") !== "native";
   // Keep the current route, audio, customer input, timing and report fields together for this visit.
   // Run and listening counters identify the owner of asynchronous work; server/runtime_state.py:claim_turn uses matching session IDs.
   const S = { run: 0, plan: [], seg: 0, line: 0, atCheckin: false, waiter: null, waitChips: [], timer: null, intakeResolver: null, pendingIntakeAnswer: null, intakeOpen: false,
     profile: { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }, pitch: null, questions: [], transcript: [], escalations: [], leads: [], resolved: new Set(), unresolved: new Set(), raised: new Set(),
-    cta: null, started: Date.now(), micOn: false, micDenied: false, voiceMode: defaultVoiceMode(bundle, mutedByDefault), inputMode: defaultVoiceMode(bundle, mutedByDefault) ? "voice" : "typed", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
-    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
+    cta: null, started: Date.now(), micOn: false, micDenied: false, voiceMode: !cachedExample && defaultVoiceMode(bundle, mutedByDefault), inputMode: !cachedExample && defaultVoiceMode(bundle, mutedByDefault) ? "voice" : "typed", rec: null, audio: null, utterance: null, muted: mutedByDefault, preloads: [], ttsToken: 0, ttsCache: new Map(), bt: { voice: null },
+    leadPromptShown: false, leadQuestion: "", leadReason: "", speaking: null, visited: [], covered: new Set(), jumps: [], sessionId: api.sessionId || newSessionId(), ended: false, endedAt: null, turns: [], lastListen: null, onFirstAudio: null,
     listenId: 0, cancelListen: null, finishListen: null, cancelVoice: null, playback: { phase: "opening", index: 0, line: 0 }, conversationOrigin: null, browseOnly: false, openQuestions: new Set(), interruptions: [] };
   const persona = bundle.voice?.persona || {}; const guide = persona.persona_name || "Guide";
   const useServerVoice = bundle.voice?.provider && bundle.voice.provider !== "browser";
@@ -203,7 +205,7 @@ export function mountPlayer(host, bundle, api) {
   let serverSTT = !!(api.stt && bundle.stt?.provider === "sarvam");
   // Check whether server microphone capture or browser speech recognition is available.
   // Return capability only; web/player/live-voice.js:LiveVoiceClient.startCapture still requests microphone access.
-  const canListen = () => (serverSTT && navigator.mediaDevices?.getUserMedia) || SR;
+  const canListen = () => !cachedExample && ((serverSTT && navigator.mediaDevices?.getUserMedia) || SR);
 
   // ---------- DOM ----------
   // Store references to visible controls while constructing the player with web/api.js:h.
@@ -235,10 +237,10 @@ export function mountPlayer(host, bundle, api) {
         // Keep the guide, captions, citations and reply controls together in the bottom dock.
         // Narration and question callbacks update these elements without remounting the controls.
         h("div", { class: "pl-cap" }, h("div", { class: "pl-guide-line" }, el.avatar = h("span", { class: "pl-guide-avatar", "aria-hidden": "true" }, Array.from(guide)[0]), h("span", { class: "who" }, guide), el.status = h("span", { class: "pl-status" }, h("span", { class: "dot" }), el.statusTxt = h("span", {}, "Ready"))), el.cap = h("div", { class: "txt" }), el.cite = h("div", { class: "cite" })),
-        h("div", { class: "pl-controls" }, h("div", { class: "pl-composer-label" }, h("span", {}, `Ask ${guide}`), el.voiceToggle = h("button", { class: "pl-voice-toggle", type: "button", role: "switch", "aria-checked": String(S.voiceMode), "aria-label": "Conversation voice mode", onclick: () => micTap() }, h("span", { class: "pl-toggle", "aria-hidden": "true" }), "Voice mode")), h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }), el.audioRetry = h("span", { class: "pl-audio-retry" })),
+        h("div", { class: "pl-controls" }, h("div", { class: "pl-composer-label" }, h("span", {}, `Ask ${guide}`), el.voiceToggle = h("button", { class: "pl-voice-toggle", hidden: cachedExample, type: "button", role: "switch", disabled: cachedExample, "aria-checked": String(S.voiceMode), "aria-label": "Conversation voice mode", onclick: () => micTap() }, h("span", { class: "pl-toggle", "aria-hidden": "true" }), "Voice mode")), h("div", { class: "pl-feedback" }, el.live = h("div", { class: "pl-live" }), el.chips = h("div", { class: "pl-chips" }), el.timer = h("div", { class: "pl-timer" }), el.audioRetry = h("span", { class: "pl-audio-retry" })),
           // Submit the typed dock reply without reloading the page, then clear its input field.
           // acceptTypedAnswer routes it to the active wait or server/app.py:run_qa.
-          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: `Ask ${guide} a question…`, "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 17 })), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 16 }))),
+          h("form", { class: "pl-reply", onsubmit: (e) => { e.preventDefault(); const t = el.reply.value.trim(); if (t) { el.reply.value = ""; acceptTypedAnswer(t); } } }, el.reply = h("input", { oninput: preferTyping, placeholder: `Ask ${guide} a question…`, "aria-label": "Your question or answer" }), el.mic = h("button", { class: "mic", type: "button", hidden: cachedExample, disabled: cachedExample, title: "Talk to your guide", "aria-label": "Talk to your guide", onclick: () => micTap() }, icon("mic", { size: 17 })), h("button", { class: "btn primary sm", type: "submit", "aria-label": "Send question" }, icon("send", { size: 16 }))),
           // Keep the status hint below the shared typed/voice composer.
           // micTap may call web/player/live-voice.js:LiveVoiceClient.startCapture or stopCapture.
           h("div", { class: "pl-mic-row" }, el.hint = h("div", { class: "pl-hint" }, (serverSTT || SR) ? "Microphone ready · or type" : "Type a question at any time"), h("span", { class: "pl-send-hint" }, "Enter to send")))),
@@ -253,11 +255,11 @@ export function mountPlayer(host, bundle, api) {
           h("button", { class: "btn primary sm", type: "submit" }, "Send", icon("send", { size: 16 }))),
         // Offer microphone intake or an explicit skip into browsing.
         // Clicks call intakeMic or skipIntake; neither adds product facts to the bundle from server/app.py:get_bundle.
-        h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", title: "Answer by voice", "aria-label": "Answer by voice", onclick: () => intakeMic() }, icon("mic", { size: 21 })), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
+        h("div", { class: "actions" }, el.inMic = h("button", { class: "mic", hidden: cachedExample, disabled: cachedExample, title: "Answer by voice", "aria-label": "Answer by voice", onclick: () => intakeMic() }, icon("mic", { size: 21 })), h("button", { class: "btn ghost", onclick: () => skipIntake() }, "Skip, start the demo")))),
       el.handoff = h("div", { class: "pl-handoff" }, el.handoffBox = h("div", { class: "box" })),
       // Build the optional contact form and its close buttons; submit calls saveLeadForm.
       // Only a validated, explicitly submitted form is sent to server/app.py:run_lead.
-      el.lead = h("div", { class: "pl-lead" }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", "aria-label": "Not now", onclick: dismissLeadPrompt }, icon("close", { size: 18 })), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", "aria-label": "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", "aria-label": "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("p", { class: "consent" }, CONSENT), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: dismissLeadPrompt }, "Not now")))),
+      el.lead = h("div", { class: "pl-lead", hidden: cachedExample }, h("div", { class: "lead-card" }, h("button", { class: "lead-close", title: "Not now", "aria-label": "Not now", onclick: dismissLeadPrompt }, icon("close", { size: 18 })), h("div", { class: "eyebrow" }, "Optional · dealership follow-up"), h("h3", {}, "Would you like to try it in person?"), el.leadCopy = h("p", {}, "Share your details and the dealership can arrange a test drive."), el.leadForm = h("form", { onsubmit: (e) => { e.preventDefault(); saveLeadForm(); } }, el.leadName = h("input", { placeholder: "Your name", "aria-label": "Your name", autocomplete: "name" }), el.leadPhone = h("input", { placeholder: "10-digit mobile number", "aria-label": "10-digit mobile number", inputmode: "tel", autocomplete: "tel" }), el.leadError = h("div", { class: "lead-error" }), h("p", { class: "consent" }, CONSENT), h("button", { class: "btn primary", type: "submit" }, "Arrange a test drive")), h("button", { class: "btn ghost sm", onclick: dismissLeadPrompt }, "Not now")))),
     // Create a separate conversation drawer with a close button and scrolling transcript area.
     // web/api.js:h builds the DOM; addMsg later retains non-note messages for the session report.
     el.drawer = h("div", { class: "pl-drawer" }, h("div", { class: "head" }, h("span", { class: "drawer-title" }, icon("message", { size: 19 }), "Conversation"), h("button", { class: "icon-btn", title: "Close conversation", "aria-label": "Close conversation", onclick: () => toggleDrawer(false) }, icon("close", { size: 18 }))), el.thread = h("div", { class: "body" }),
@@ -413,7 +415,7 @@ export function mountPlayer(host, bundle, api) {
 
   // Voice mode is a visit preference; each typed/spoken turn keeps its own source.
   function setVoiceMode(enabled) {
-    S.voiceMode = !!enabled; S.inputMode = S.voiceMode ? "voice" : "typed";
+    S.voiceMode = !cachedExample && !!enabled; S.inputMode = S.voiceMode ? "voice" : "typed";
     if (el.voiceMode) el.voiceMode.checked = S.voiceMode;
     setMicUI(S.micOn);
   }
@@ -940,7 +942,9 @@ export function mountPlayer(host, bundle, api) {
   function setMicUI(on) {
     const enabled = live ? S.voiceMode : S.inputMode === "voice";
     el.voiceToggle?.setAttribute("aria-checked", String(enabled));
+    if (el.voiceToggle) el.voiceToggle.hidden = cachedExample;
     for (const button of [el.mic, el.inMic]) {
+      button.hidden = cachedExample; button.disabled = cachedExample;
       button.classList.toggle("on", enabled);
       button.title = enabled ? "Turn voice mode off" : "Turn voice mode on";
       button.setAttribute("aria-label", button.title); button.setAttribute("aria-pressed", String(enabled));
@@ -1271,7 +1275,7 @@ export function mountPlayer(host, bundle, api) {
     S.playback = { phase: "closing", line: cs?.lines?.length || 0 };
     showSlideView(heroClose(), { reveal: 99 });
     el.cite.textContent = "";
-    const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
+    const chips = (bundle.ctas || []).map((c) => ({ label: c.label, value: "cta:" + c.id, primary: !!c.primary || c.id === S.pitch?.advance_cta })).concat([{ label: cachedExample ? "View recap" : "Not yet", value: "notyet" }, { label: "One more question", value: "question" }]);
     const r = await waitFor(chips, 0); if (run !== S.run) return;
     if (r.value === "question") { if (r.text) handleQuestion(r.text); else listenForQuestion(); return; }
     if (r.value === "__interrupted") return;
@@ -1305,6 +1309,7 @@ export function mountPlayer(host, bundle, api) {
   // Route a microphone click to live capture, intake, an existing wait or a new question.
   // Use live-voice.js:LiveVoiceClient.startCapture/stopCapture when available; otherwise use the legacy listener.
   function micTap() {
+    if (cachedExample) return;
     primeRecordedAudio();
     live?.unlockOutput().catch(() => {});
     cancelPostAnswerListen();
@@ -1322,7 +1327,7 @@ export function mountPlayer(host, bundle, api) {
     const cta = (bundle.ctas || []).find(item => item.id === suggested);
     const choices = [{ label: "Ask another question", value: "question" }, { label: "Continue demo", value: "continue", primary: true }];
     if (cta) choices.push({ label: cta.label, value: "cta:" + cta.id });
-    if (callbackQuestion && !S.leadDismissed && !S.leads.length) choices.push({ label: "Request dealership follow-up", value: "callback" });
+    if (!cachedExample && callbackQuestion && !S.leadDismissed && !S.leads.length) choices.push({ label: "Request dealership follow-up", value: "callback" });
     const response = waitFor(choices), owner = S.waiter;
     if (autoResume && owner?.run === run) {
       S.postAnswerListen = { waiter: owner, run, turn, timer: null };
@@ -1459,6 +1464,12 @@ export function mountPlayer(host, bundle, api) {
       turn.delivery_done = Date.now(); turn.visual_status = "unavailable"; S.activeTurn = null;
       await holdConversation(run, { turn }); return;
     }
+    if (r.cached_only && !r.answered) {
+      el.cite.textContent = ""; S.openQuestions.delete(customerQuestion);
+      if (!(await speak(r.answer, run, r.audio, r))) return;
+      turn.delivery_done = Date.now(); S.activeTurn = null;
+      await holdConversation(run, { turn }); return;
+    }
     if (!r.answered) {
       // Present a supported limitation or service refusal and retain the question as unresolved.
       // The server answer from server/runtime_graph.py:run_turn is spoken before optional follow-up and explicit waiting.
@@ -1466,8 +1477,8 @@ export function mountPlayer(host, bundle, api) {
       if (r.topic && r.topic !== "other") S.raised.add(r.topic);
       S.unresolved.add(r.topic || "question"); el.cite.textContent = "";
       showPublicSearch(r);
-      const decline = live && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
-      if (!(await speak(decline, run, live ? r.audio : null, live ? r : null))) return;
+      const decline = (live || r.cached_only) && r.answer ? r.answer : "I don't have that answer in the approved information. I've kept it as an open question. You can ask something else, continue when you are ready, or request help from the dealership.";
+      if (!(await speak(decline, run, (live || r.cached_only) ? r.audio : null, (live || r.cached_only) ? r : null))) return;
       turn.delivery_done = Date.now(); S.activeTurn = null;
       await holdConversation(run, { turn, callbackQuestion: customerQuestion }); return;
     }
@@ -1509,7 +1520,7 @@ export function mountPlayer(host, bundle, api) {
     el.cite.textContent = [r.fact_ids?.length ? "sources: " + r.fact_ids.join(", ") : "", conditionIds.length ? "conditions: " + [...new Set(conditionIds)].join(", ") : ""].filter(Boolean).join(" · ");
     showPublicSearch(r);
     if (r.escalate) S.escalations.push(r.escalate); if (r.topic && r.topic !== "other") S.raised.add(r.topic);
-    if (r.from_bank) addMsg("note", "answered from the FAQ bank — no model call");
+    if (r.from_bank) addMsg("note", r.cached_only ? "answered from the prepared source — no model call" : "answered from the FAQ bank — no model call");
     if (!(await speak(r.answer, run, r.audio, r))) return;
     turn.delivery_done = Date.now(); S.activeTurn = null;
     S.resolved.add(r.topic || "question"); S.unresolved.delete(r.topic || "question"); S.openQuestions.delete(customerQuestion);
@@ -1519,6 +1530,7 @@ export function mountPlayer(host, bundle, api) {
   // Open the optional dealership contact form with wording appropriate to the reason.
   // Local fields are prefilled only; server/app.py:run_lead is called only after form submission.
   function showLeadPrompt(reason, question = "") {
+    if (cachedExample) return;
     if (S.waiterVoice?.autoResumed) stopListening();
     if (S.leads.length || ((S.leadPromptShown || S.leadDismissed) && reason !== "requested")) return;
     S.leadFormId = (S.leadFormId || 0) + 1;
@@ -1535,6 +1547,7 @@ export function mountPlayer(host, bundle, api) {
   // Validate a submitted contact form and save consent, the question and customer context.
   // web/app.js:renderPlay connects api.lead to server/app.py:run_lead; failures keep the form open for retry.
   async function saveLeadForm() {
+    if (cachedExample) return;
     const name = el.leadName.value.trim(); const raw = el.leadPhone.value.replace(/[\s-]/g, ""); const m = raw.match(PHONE);
     if (!m) { el.leadError.textContent = "Enter a valid 10-digit Indian mobile number."; el.leadPhone.focus(); return; }
     const sessionId = S.sessionId, formId = S.leadFormId;
@@ -1645,6 +1658,7 @@ export function mountPlayer(host, bundle, api) {
   // Ask the opening preference question and save only the customer's actual response.
   // Start server/app.py:run_pitch while acknowledgment or overview audio plays, then continue the opening flow.
   async function runIntake() {
+    if (cachedExample) return skipIntake({ guided: true });
     const run = newRun(); S.browseOnly = false; S.playback = { phase: "intake", line: 0 }; S.intakeOpen = true; el.intake.classList.add("open"); el.inFallback.classList.add("open");
     el.cite.textContent = "";
     showSlideView(heroOpen(), { reveal: 99 });
@@ -1746,9 +1760,9 @@ export function mountPlayer(host, bundle, api) {
   }
   // Skip preference intake and enter the reviewed browsing route.
   // This clears the old wait and skips personalization; content still comes from server/app.py:get_bundle.
-  function skipIntake() {
-    intakeSites();
-    interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = null; S.browseOnly = true;
+  function skipIntake({ guided = false } = {}) {
+    if (!cachedExample) intakeSites();
+    interruptAll(); el.intake.classList.remove("open"); S.intakeOpen = false; S.intakeResolver = null; S.pendingIntakeAnswer = null; S.browseOnly = !guided; S.genericTour = guided;
     const run = newRun(); S.playback = { phase: "opening", index: 0, line: 0 }; showSlideView(heroOpen(), { reveal: 99 });
     playIntroFilm(run).then((ok) => { if (ok) startAfterIntake(run); });
   }
@@ -1893,7 +1907,7 @@ export function mountPlayer(host, bundle, api) {
     const explored = [...new Set(session.slides_visited.map((visit) => slides.find((slide) => slide.id === visit.slide_id)).filter((slide) => slide && !["hero_open", "hero_close", "closing"].includes(slide.kind)).map((slide) => slide.title).filter(Boolean))];
     const openQuestions = [...S.openQuestions];
     const shared = [...new Set([S.profile.why, ...S.profile.stated_needs].filter(Boolean))];
-    const actionUrl = ctaLink(c);
+    const actionUrl = cachedExample ? null : ctaLink(c);
     const externalAction = actionUrl ? h("div", {}, h("a", { class: "btn primary sm", href: actionUrl, target: "_blank", rel: "noopener noreferrer", "aria-label": `${c.label} (opens in a new tab)` }, c.label), h("p", { class: "sub" }, "Opens in a new tab.")) : null;
     // Build a small recap section from a heading and its child elements.
     // Return a DOM node using web/api.js:h for priorities, explored topics, open questions or next steps.
@@ -1905,7 +1919,7 @@ export function mountPlayer(host, bundle, api) {
         shared.length ? section("What matters to you", shared.map((text) => h("p", {}, text))) : null,
         section("What you explored", [explored.length ? h("ul", {}, explored.map((title) => h("li", {}, title))) : h("p", {}, "We haven't explored the details yet.")]),
         section("Questions still open", [openQuestions.length ? h("ul", {}, openQuestions.map((question) => h("li", {}, question))) : h("p", {}, S.questions.length ? "No unanswered questions noted." : "No questions raised yet.")]),
-        section("Your next step", [S.leads.length ? h("p", {}, `You requested a dealership follow-up about “${S.leads.at(-1).question}”.`) : h("div", {},
+        section("Your next step", [cachedExample ? h("p", {}, "This is a portfolio demonstration. No contact details are collected and no dealership follow-up is arranged. Create your own demo to explore the full workflow.") : S.leads.length ? h("p", {}, `You requested a dealership follow-up about “${S.leads.at(-1).question}”.`) : h("div", {},
           c ? h("p", {}, `You selected “${c.label}”.${actionUrl ? "" : " You can leave your details if you would like the dealership to follow up."}`) : h("p", {}, "Take your time. A dealership follow-up is optional."),
           // Offer a follow-up form unless the selected next step is only an external information link.
           // Clicking opens local consent fields; server/app.py:run_lead is still deferred until explicit submission.
@@ -1977,7 +1991,16 @@ export function mountPlayer(host, bundle, api) {
   // ---------- lifecycle ----------
   // Start over with a fresh session ID, empty visit history and newly created live connection.
   // Destroy the old slide and capture before intake; live-voice.js:LiveVoiceClient.close ends the previous transport.
-  function restart() { interruptAll(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = newSessionId(); S.questionAckIndex = 0; S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadDismissed = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
+  let restartingVisit = false;
+  async function restart() {
+    if (restartingVisit || destroyed) return;
+    restartingVisit = true;
+    let freshSessionId;
+    try { freshSessionId = api.newVisit ? await api.newVisit() : newSessionId(); }
+    catch (error) { setStatus("error", error.message || "The visit could not restart. Please retry."); return; }
+    finally { restartingVisit = false; }
+    if (destroyed) return;
+    interruptAll(); if (S.hasStarted || S.transcript.length) saveVisit(sessionRecord()).catch(() => {}); presentation.reset(); presentation.mount(slides); delete S.checkin_skipped; live?.close(); S.conversationOrigin = null; S.openQuestions.clear(); S.playback = { phase: "intake", line: 0 }; S.pendingIntakeAnswer = null; S.pendingPromptAnswer = ""; S.promptRun = null; S.overviewPlayed = false; S.planningDecided = false; S.browseOnly = false; S.paused = false; S.resume = null; el.pauseBtn.replaceChildren(icon("pause", { size: 18 })); el.pauseBtn.classList.remove("on"); S.customPlayed = false; S.introPlayed = false; S.skipFilm = false; S.pitchPromise = null; el.handoff.classList.remove("open"); el.lead.classList.remove("open"); S.questions.length = 0; S.transcript.length = 0; S.escalations.length = 0; S.leads.length = 0; S.visited.length = 0; S.covered.clear(); S.jumps.length = 0; S.turns.length = 0; S.lastListen = null; S.onFirstAudio = null; S.sessionId = freshSessionId; S.questionAckIndex = 0; S.ended = false; S.endedAt = null; S.resolved.clear(); S.unresolved.clear(); S.raised.clear(); S.cta = null; S.pitch = null; S.plan = []; S.leadPromptShown = false; S.leadDismissed = false; S.leadQuestion = ""; S.started = Date.now(); S.profile = { name: "", why: "", followup: "", focus: [], stated_needs: [], customer_urls: [] }; el.inSites.value = ""; el.thread.replaceChildren(); if (cur) { cur.view.destroy(); cur = null; } el.stack.replaceChildren(); createLive(); startLive(); renderProgress(); runIntake(); }
   // Expose a simple pause method for callers without toggling an already paused demo back on.
   // web/app.js:renderPlay receives this method from mountPlayer.
   function pause() { if (!S.paused) togglePause(); }
@@ -2002,11 +2025,11 @@ export function mountPlayer(host, bundle, api) {
   showSlideView(heroOpen(), { reveal: 99 });
   // Offer guided Explore or self-paced Browse and start capture only after a welcome-button click.
   // Both paths use the API callbacks from web/app.js:renderPlay, then select intake or its explicit skip.
-  const voiceChoice = h("label", { class: "pl-voice-choice" }, h("span", { class: "pl-voice-choice-label" }, "Voice mode"),
-    el.voiceMode = h("input", { type: "checkbox", role: "switch", checked: S.voiceMode, "aria-label": "Voice mode" }),
-    h("span", { class: "pl-voice-choice-caption" }, `Talk to ${guide}. You can also type at any time.`));
-  const begin = (browse) => { S.hasStarted = true; setVoiceMode(el.voiceMode.checked); startBtn.remove(); startLive(); if (browse) skipIntake(); else runIntake(); };
-  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, "Take a closer look. Ask what matters to you."), voiceChoice, h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => begin(false) }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => begin(true) }, "Browse at my pace"))));
+  const voiceChoice = h("label", { class: "pl-voice-choice", hidden: cachedExample }, h("span", { class: "pl-voice-choice-label" }, "Voice mode"),
+    el.voiceMode = h("input", { type: "checkbox", role: "switch", checked: S.voiceMode, disabled: cachedExample, "aria-label": "Voice mode" }),
+    h("span", { class: "pl-voice-choice-caption" }, cachedExample ? "Recorded narration and typed questions from prepared content. No new AI or speech calls." : `Talk to ${guide}. You can also type at any time.`));
+  const begin = (browse) => { S.hasStarted = true; setVoiceMode(el.voiceMode.checked); startBtn.remove(); startLive(); if (cachedExample) skipIntake({ guided: !browse }); else if (browse) skipIntake(); else runIntake(); };
+  const startBtn = h("div", { class: "pl-intake pl-welcome open" }, h("div", { class: "inner" }, h("div", { class: "welcome-guide" }, mascot({ size: 58, image: bundle.mascot, title: guide }).el, h("div", {}, h("div", { class: "state" }, "YOUR VIRTUAL SHOWROOM"), h("span", { class: "guide-caption" }, `Your guide, ${guide}`))), h("h1", {}, bundle.product?.name || bundle.name), h("p", {}, cachedExample ? `${bundle.example.label}. New answers and microphone input are available in your own demos.` : "Take a closer look. Ask what matters to you."), voiceChoice, h("div", { class: "actions" }, h("button", { class: "btn primary", onclick: () => begin(false) }, "Explore with me", icon("arrow-right", { size: 17 })), h("button", { class: "btn ghost", onclick: () => begin(true) }, "Browse at my pace"))));
   el.stage.append(startBtn);
   // List alternate languages already included in the published bundle.
   // These controls switch existing content; they do not call server/agents/translate.py:translate to generate anything.

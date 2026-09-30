@@ -1,4 +1,5 @@
 // Shell + hash router.  #/home · #/demos · #/studio/<id>/sources|align|rehearse · #/play/<id>
+import { loadSession, clearSession, renderAuth, setupTheme } from "/web/portfolio-auth.js";
 import { api, h, toast } from "/web/api.js";
 import { renderDemos } from "/web/demos.js";
 import { renderHome } from "/web/home.js";
@@ -9,6 +10,7 @@ import { renderRehearse } from "/web/studio/rehearse.js";
 import { renderSessions, renderShare } from "/web/studio/sessions.js";
 import { renderPlayground } from "/web/playground.js";
 import { renderObservability } from "/web/observability.js";
+import { createVisitApi } from "/web/player/visit-api.js";
 import { mountPlayer } from "/web/player/player.js";
 import { resolveLiveClientFactory } from "/web/player/voice-transport.js";
 
@@ -112,6 +114,24 @@ async function renderStudio(demoId, stage, epoch = beginView()) {
 async function route() {
   const epoch = beginView();
   const parts = (location.hash || "#/home").slice(2).split("/");
+  let session;
+  try { session = await loadSession(); }
+  catch (error) {
+    if (!isCurrentView(epoch)) return;
+    main.replaceChildren(h("div", { class:"page" }, h("div", { class:"studio-empty", role:"alert" },
+      h("h2", {}, "Your workspace could not load"), h("p", {}, "Please retry the connection."),
+      h("button", { class:"btn", onclick:route }, "Retry"))));
+    return;
+  }
+  if (!isCurrentView(epoch)) return;
+  const publicRoute = ["play", "share"].includes(parts[0]);
+  const authRoute = ["signin", "signup"].includes(parts[0]);
+  document.getElementById("tabs").hidden = session.enabled && !session.user;
+  if (session.enabled && (authRoute || (!publicRoute && !session.user))) {
+    if (session.user) return navigate("#/home");
+    setTab("");
+    return renderAuth({ main, mode:parts[0] === "signup" ? "signup" : "signin", onSuccess:() => navigate("#/home") });
+  }
   if (parts[0] === "home") { setTab("home"); if (current.unsub) { current.unsub(); current.unsub = null; } return renderHome({ main, navigate }); }
   if (parts[0] === "studio") { setTab("studio"); return renderStudio(parts[1], parts[2], epoch); }
   if (parts[0] === "share" && parts[1] && parts[2]) { setTab(""); if (current.unsub) { current.unsub(); current.unsub = null; } return renderShare({ main, demoId: parts[1], sid: parts[2], key: parts[3] || "" }); }
@@ -137,8 +157,9 @@ async function renderPlay(demoId, epoch = beginView()) {
   if (!isCurrentView(epoch)) return;
   const host = h("div", { class: "play-page" });
   main.replaceChildren(host);
-  let liveClientFactory;
+  let liveClientFactory, visitApi;
   try {
+    visitApi = await createVisitApi(demoId);
     liveClientFactory = await resolveLiveClientFactory(bundle, { loadCapability: () => api.get("/api/runtime/transport") });
   } catch (error) {
     if (!isCurrentView(epoch)) return;
@@ -149,16 +170,9 @@ async function renderPlay(demoId, epoch = beginView()) {
   }
   if (!isCurrentView(epoch)) return;
   playInstance = mountPlayer(host, bundle, {
-    liveUrl: bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
+    liveUrl: !bundle.example?.cached_only && bundle.runtime?.version >= 1 ? `/api/demos/${demoId}/run/live` : null,
     liveClientFactory,
-    qa: (body, options) => api.post(`/api/demos/${demoId}/run/qa`, body, options),
-    tts: (text) => api.post(`/api/demos/${demoId}/run/tts`, { text }).then((r) => r.url),
-    tts_lang: (text, language) => api.post(`/api/demos/${demoId}/run/tts`, { text, language }).then((r) => r.url),
-    pitch: (body) => api.post(`/api/demos/${demoId}/run/pitch`, body),
-    lead: (body) => api.post(`/api/demos/${demoId}/run/lead`, body),
-    stt: (blob, lang) => { const fd = new FormData(); fd.append("file", blob, "speech.wav"); fd.append("language", lang || "en-IN"); return api.form(`/api/demos/${demoId}/run/stt`, fd).then((r) => r.transcript || ""); },
-    saveSession: (s) => api.post(`/api/demos/${demoId}/run/session`, s),
-    beacon: (s) => navigator.sendBeacon(`/api/demos/${demoId}/run/session`, new Blob([JSON.stringify(s)], { type: "application/json" })),
+    ...visitApi,
     downloadUrl: `/api/demos/${demoId}/export.mp4`,
     onClose: () => { try { playInstance.destroy(); } catch (e) {} playInstance = null; navigate("#/demos"); },
   });
@@ -172,4 +186,11 @@ document.querySelector('#tabs a[href="#/studio"]')?.addEventListener("click", ev
   if (location.hash === "#/studio") { event.preventDefault(); route(); }
 });
 window.addEventListener("hashchange", route);
-health(); route();
+window.addEventListener('portfolio-session-expired', () => {
+  clearSession();
+  if (!/^#\/(?:play|share)\//.test(location.hash)) {
+    toast('Your session ended. Please sign in again.', true);
+    if (location.hash === '#/signin') route(); else navigate('#/signin');
+  }
+});
+setupTheme(); route();

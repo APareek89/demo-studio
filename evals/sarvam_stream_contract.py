@@ -103,6 +103,7 @@ async def main():
                 check("provider final terminates TTS without silence timer", remainder == [])
             check(f"TTS {'cancel' if cancel else 'complete'} closes socket", socket.closed)
             check(f"TTS {'cancel' if cancel else 'complete'} retains selected voice and raw PCM", socket.sent[0]["data"]["speaker"] == "priya" and socket.sent[0]["data"]["output_audio_codec"] == "linear16" and first["sample_rate"] == 24000)
+            check(f"TTS {'cancel' if cancel else 'complete'} explicitly requests 128k without changing PCM bytes", socket.sent[0]["data"]["output_audio_bitrate"] == "128k" and first["audio"] == pcm and first["format"] == "pcm_s16le")
             check(f"TTS {'cancel' if cancel else 'complete'} accounts submitted characters", record.call_args.kwargs["chars"] == len("Reviewed answer"))
     with patch.object(stream.config, "MOCK_LLM", True), patch.object(stream.websockets, "connect", side_effect=AssertionError("network forbidden")) as connect:
         chunks = [event async for event in stream.stream_tts("Mock answer")]

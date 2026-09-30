@@ -150,6 +150,33 @@ def _eligible(entry: dict, snapshot_id: str, registry_hash: str, allowed: set[st
                 and entry.get("snapshot_id", bank.get("snapshot_id", "")) == snapshot_id)
 
 
+def _visible_to_visit(entry: dict, session_id: str) -> bool:
+    from .. import portfolio_auth as auth
+    if not auth.enabled():
+        return True
+    return bool(_source(entry) == "customer" and session_id and entry.get("session_id") == session_id)
+
+
+def _available_entries(demo_id: str, bank: dict, session_id: str) -> list[dict]:
+    from .. import portfolio_auth as auth
+    if not auth.enabled():
+        return bank.get("entries", [])
+    # A draft edit/review is not a publication. Public answers are an exact
+    # projection of the pinned bundle; current customer drafts stay visit-bound.
+    bundle = store.read_json(demo_id, "bundle.json") or {}
+    snapshot_id = bundle.get("knowledge_snapshot_id")
+    shared = []
+    if snapshot_id:
+        try:
+            fingerprint = _registry_hash(demo_id, snapshot_id=snapshot_id)
+            for entry in bundle.get("faq", []):
+                shared.append({**copy.deepcopy(entry), "snapshot_id": snapshot_id,
+                               "registry_hash": fingerprint, "reviewed": True})
+        except ValueError:
+            pass
+    return shared + [entry for entry in bank.get("entries", []) if _visible_to_visit(entry, session_id)]
+
+
 def _save_bank(demo_id: str, bank: dict, *, changed: bool = False) -> None:
     """Caller holds store._lock; count/audio updates do not clear an approval."""
     active = current_entries(bank)
@@ -188,7 +215,8 @@ def normalize_entry(entry: dict, audience: str, question: str | None = None) -> 
 
 
 def match(demo_id: str, question: str, *, snapshot_id: str | None = None,
-          registry_hash: str | None = None, increment: bool = False, expected: dict | None = None) -> dict | None:
+          registry_hash: str | None = None, increment: bool = False, expected: dict | None = None,
+          session_id: str = "") -> dict | None:
     """Read a compatible answer; count only an actual caller-selected cache hit."""
     with store._lock(demo_id):
         try:
@@ -196,7 +224,7 @@ def match(demo_id: str, question: str, *, snapshot_id: str | None = None,
         except ValueError:
             return None
         bank = store.read_json(demo_id, "faq.json") or {}
-        entries = bank.get("entries", [])
+        entries = _available_entries(demo_id, bank, session_id)
         if _best([entry for entry in entries if entry.get("rejected")], question):
             return None
         demo = store.load(demo_id)
@@ -215,6 +243,9 @@ def match(demo_id: str, question: str, *, snapshot_id: str | None = None,
 def cache_answer(demo_id: str, question: str, result: dict, *, snapshot_id: str | None = None,
                  registry_hash: str | None = None, session_id: str = "") -> dict | None:
     """Cache only already-validated, registry-backed answers; never learn a claim."""
+    from .. import portfolio_auth as auth
+    if auth.enabled() and not session_id:
+        return None
     repair = result.get("validation_repair") or {}
     if (not question.strip() or not result.get("answered") or not result.get("answer", "").strip()
             or not result.get("fact_ids") or result.get("clarifying_question") or result.get("cta")
@@ -249,9 +280,10 @@ def cache_answer(demo_id: str, question: str, result: dict, *, snapshot_id: str 
         bank.setdefault("snapshot_id", sid)
         bank.setdefault("registry_hash", fingerprint)
         entries = bank.setdefault("entries", [])
-        if _best([old for old in entries if old.get("rejected")], question):
+        visible = _available_entries(demo_id, bank, session_id)
+        if _best([old for old in visible if old.get("rejected")], question):
             return None
-        old = _best([old for old in entries if _eligible(old, sid, fingerprint, allowed, bank)], question)
+        old = _best([old for old in visible if _eligible(old, sid, fingerprint, allowed, bank)], question)
         changed = old is None
         if old:
             changed = not old.get("reviewed") and any(old.get(key) != entry.get(key) for key in ("answer", "fact_ids"))
@@ -260,7 +292,10 @@ def cache_answer(demo_id: str, question: str, result: dict, *, snapshot_id: str 
             old["asked_count"] = int(old.get("asked_count") or 0) + 1
             entry = old
         else:
-            key = json.dumps([question.strip().casefold(), sid, fingerprint], ensure_ascii=False)
+            identity = [question.strip().casefold(), sid, fingerprint]
+            if auth.enabled():
+                identity.append(session_id)
+            key = json.dumps(identity, ensure_ascii=False)
             entry.update(id="C" + hashlib.sha256(key.encode()).hexdigest()[:16], source="customer", origin="runtime",
                          asked_count=1, snapshot_id=sid, registry_hash=fingerprint, reviewed=False, session_id=session_id)
             entries.append(entry)

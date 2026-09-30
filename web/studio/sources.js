@@ -1,3 +1,4 @@
+import { providerBadge } from "/web/portfolio-media.js";
 import { api, h, toast, fmtSize } from "/web/api.js";
 import { icon } from "/web/icons.js";
 import { providerReadiness, readinessQuery } from "/web/provider-readiness.js";
@@ -68,11 +69,14 @@ export function renderSources(ctx) {
     sourceCount.textContent = `${uploadedSources.length} added`;
     list.replaceChildren(...uploadedSources.map((s) => h("div", { class: "src-item" },
       h("span", { class: "source-file-icon", title: s.kind }, icon(({ video: "video", image: "image", url: "link" })[s.kind] || "file")), h("span", { class: "kind" }, s.kind), h("span", { class: "name", title: s.name }, s.name),
-      h("span", { class: "pill" }, s.role), h("span", { class: "size" }, s.size ? fmtSize(s.size) : "url"),
+      h("span", { class: "pill" }, s.role), s.reference_only ? h("span", { class: "pill", title: "Source citation retained from the reviewed publication. The original unpublished file is not included in this example." }, "Reference only") : null, s.kind === "image" ? providerBadge(s.enhanced?.provider) : null, h("span", { class: "size" }, s.size ? fmtSize(s.size) : "url"),
       (s.kind === "video" || s.kind === "image") ? h("label", { class: "use", title: "Off = the agent still learns from it, but it is not shown in the demo" }, h("input", { type: "checkbox", checked: s.use_in_demo !== false, onchange: async (e) => { try { const r = await api.patch(`/api/demos/${demoId}/sources/${s.id}`, { use_in_demo: e.target.checked }); demo.sources = r.sources; } catch (err) { toast(err.message, true); } } }), "use in demo") : null,
-      h("button", { class: "btn sm ghost source-remove", title: `Remove ${s.name}`, "aria-label": `Remove ${s.name}`, onclick: async () => { const r = await api.del(`/api/demos/${demoId}/sources/${s.id}`); demo.sources = r.sources; refreshList(); } }, icon("trash", { size: 16 })) )));
+      h("button", { class: "btn sm ghost source-remove", title: `Remove ${s.name}`, "aria-label": `Remove ${s.name}`, onclick: async () => { try { const r = await api.del(`/api/demos/${demoId}/sources/${s.id}`); demo.sources = r.sources; refreshList(); } catch (error) { toast(error.message, true); } } }, icon("trash", { size: 16 })) )));
     if (!uploadedSources.length) list.append(h("div", { class: "studio-empty source-empty" }, icon("upload", { size: 24 }), h("div", {}, h("h3", {}, "Your source library starts here"), h("p", {}, "Add product material above. Everything you add will appear here for review."))));
-    readBtn.disabled = !uploadedSources.length && !urlIn.value.trim();
+    const cachedExample = ["synthetic_silent", "curated_cached"].includes(demo.example_kind);
+    readBtn.disabled = cachedExample || (!uploadedSources.length && !urlIn.value.trim());
+    previewBtn.disabled = cachedExample;
+    if (cachedExample) readBtn.title = "Create a new demo with your own sources to generate content.";
   }
 
   async function upload(role, files, extra = {}) {

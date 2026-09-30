@@ -83,9 +83,12 @@ def exists(demo_id: str) -> bool:
 # Create the demo folders, initial settings and unapproved review cards.
 # Input: display name. Output: saved demo.json, empty conversation.json and the demo record.
 # Linked: server/config.py supplies defaults; server/app.py creates demos through this store.
-def new_demo(name: str) -> dict:
+def new_demo(name: str, owner_user_id: str | None = None) -> dict:
+    from . import portfolio_auth as auth
     demo_id = "dm_" + secrets.token_hex(4)
-    d = demo_dir(demo_id)
+    auth.reserve_demo(owner_user_id, demo_id)
+    final = demo_dir(demo_id)
+    d = final.with_name(".creating-" + demo_id + "-" + secrets.token_hex(6)) if auth.enabled() else final
     for sub in ("sources", "audio", "sessions", "logs", "leads"):
         (d / sub).mkdir(parents=True, exist_ok=True)
     demo = {
@@ -113,8 +116,14 @@ def new_demo(name: str) -> dict:
         },
         "running": None,
     }
-    save(demo_id, demo)
-    write_json(demo_id, "conversation.json", [])
+    if auth.enabled():
+        (d / "demo.json").write_text(json.dumps(demo, indent=2, ensure_ascii=False))
+        (d / "conversation.json").write_text("[]")
+        d.rename(final)
+        auth.activate_demo(owner_user_id, demo_id)
+    else:
+        save(demo_id, demo)
+        write_json(demo_id, "conversation.json", [])
     return demo
 
 
@@ -172,9 +181,17 @@ def update(demo_id: str, fn) -> dict:
 # Build lightweight library rows from saved demo folders, newest update first.
 # Input: server/config.py:DATA_DIR. Output: summaries with status, sources, approvals and session counts.
 # Linked: server/app.py:list_demos returns these summaries to the home/library UI.
-def list_demos() -> list[dict]:
+def list_demos(owner_user_id: str | None = None) -> list[dict]:
+    from . import portfolio_auth as auth
+    allowed = None
+    if auth.enabled():
+        if not owner_user_id:
+            raise PermissionError("An explicit creator is required to list demos")
+        allowed = auth.owned_demo_ids(owner_user_id)
     out = []
     for d in sorted(config.DATA_DIR.glob("dm_*")):
+        if allowed is not None and d.name not in allowed:
+            continue
         p = d / "demo.json"
         if p.exists():
             try:
@@ -197,6 +214,8 @@ def list_demos() -> list[dict]:
 # Input: demo ID. Output: no return value; metadata, artifacts and media in that folder are removed.
 # Linked: server/app.py:delete_demo is the route that invokes this storage action.
 def delete_demo(demo_id: str) -> None:
+    from . import portfolio_auth as auth
+    auth.retire_demo(demo_id)
     d = demo_dir(demo_id)
     if d.exists():
         shutil.rmtree(d)
@@ -205,7 +224,12 @@ def delete_demo(demo_id: str) -> None:
 # Copy a demo folder under a new identity while retaining its existing content.
 # Input: source demo ID. Output: a new demo record/folder, including copied artifacts and records.
 # Linked: server/app.py:duplicate exposes this; it is a folder copy rather than fresh agent generation.
-def duplicate_demo(demo_id: str) -> dict:
+def duplicate_demo(demo_id: str, owner_user_id: str | None = None) -> dict:
+    from . import portfolio_auth as auth
+    if auth.enabled():
+        if not owner_user_id or auth.owner_for(demo_id) != owner_user_id:
+            raise PermissionError("Demo not found")
+        return _owned_duplicate(demo_id, owner_user_id)
     src = load(demo_id)
     new = new_demo(src["name"] + " (copy)")
     nid = new["id"]
@@ -217,6 +241,68 @@ def duplicate_demo(demo_id: str) -> dict:
     demo["created_at"] = now()
     demo["running"] = None
     save(nid, demo)
+    return demo
+
+
+def _owned_duplicate(demo_id: str, owner_user_id: str) -> dict:
+    """Copy authored artifacts for the same owner; never visitor/private histories."""
+    from . import portfolio_auth as auth
+    from .agents import faq
+    nid = "dm_" + secrets.token_hex(4)
+    auth.reserve_demo(owner_user_id, nid)
+    final = demo_dir(nid)
+    staging = final.with_name(".creating-" + nid + "-" + secrets.token_hex(6))
+    staging.mkdir(parents=True)
+    allowed_files = {"understanding.json", "coach.json", "plan.json", "script.json", "deck.json", "fillers.json"}
+    source = demo_dir(demo_id)
+    for name in ("sources", "derived", "media", "knowledge"):
+        path = source / name
+        if path.is_dir():
+            # No symlink may turn a safe artifact copy into a directory escape.
+            if path.is_symlink() or any(item.is_symlink() for item in path.rglob("*")):
+                raise ValueError("Symbolic links cannot be copied into a demo")
+            shutil.copytree(path, staging / name)
+    for path in source.iterdir():
+        if path.name in allowed_files or re.fullmatch(r"(?:script|deck)\.[a-zA-Z-]+\.json", path.name):
+            if path.is_symlink():
+                raise ValueError("Symbolic links cannot be copied into a demo")
+            if path.is_file():
+                shutil.copyfile(path, staging / path.name)
+    demo = load(demo_id)
+    demo.update(id=nid, name=demo["name"] + " (copy)", created_at=now(), updated_at=now(), running=None,
+                status="align", version=0)
+    # Duplicates enter normal review and cannot inherit a public visitor link.
+    demo["approvals"] = {card: False for card in CARDS}
+    demo["stages"]["bundle"] = {"status": "idle", "updated_at": None, "error": None, "message": ""}
+    (staging / "demo.json").write_text(json.dumps(demo, indent=2, ensure_ascii=False))
+    bank = read_json(demo_id, "faq.json") or {}
+    bank["entries"] = [entry for entry in faq.current_entries(bank) if faq._source(entry) != "customer"]
+    (staging / "faq.json").write_text(json.dumps(bank, indent=2, ensure_ascii=False))
+    # Audio generated from visitor questions must not be copied. Select only
+    # references in the authored files actually included in this copy.
+    audio = set()
+    def references(value):
+        if isinstance(value, str) and re.fullmatch(r"audio/[a-f0-9]{20}\.(wav|mp3|m4a)", value):
+            audio.add(value)
+        elif isinstance(value, dict):
+            for child in value.values():
+                references(child)
+        elif isinstance(value, list):
+            for child in value:
+                references(child)
+    for artifact in staging.glob("*.json"):
+        references(json.loads(artifact.read_text()))
+    (staging / "audio").mkdir(exist_ok=True)
+    for rel in audio:
+        file = source / rel
+        if file.is_file() and not file.is_symlink():
+            shutil.copyfile(file, staging / rel)
+    (staging / "knowledge" / "published.json").unlink(missing_ok=True)
+    (staging / "conversation.json").write_text("[]")
+    for name in ("sessions", "logs", "leads"):
+        (staging / name).mkdir(exist_ok=True)
+    staging.rename(final)
+    auth.activate_demo(owner_user_id, nid)
     return demo
 
 
@@ -232,9 +318,26 @@ def write_json(demo_id: str, name: str, obj: Any) -> None:
     # the complete payload in one replace so a partial JSON document can never
     # be mistaken for a missing artifact and reset live state.
     tmp = p.with_name(f".{p.name}.{secrets.token_hex(6)}.tmp")
+    prepared = None
+    if name == "bundle.json":
+        from . import portfolio_auth as auth
+        prepared = auth.prepare_publication(demo_id, obj)
+    before = p.read_bytes() if name == "bundle.json" and p.exists() else None
     try:
         tmp.write_text(json.dumps(obj, indent=2, ensure_ascii=False))
         tmp.replace(p)
+        if name == "bundle.json":
+            from . import portfolio_auth as auth
+            try:
+                auth.mark_published(demo_id, obj, prepared)
+            except Exception:
+                # A registry failure must retain the previous public bundle.
+                if before is None:
+                    p.unlink(missing_ok=True)
+                else:
+                    tmp.write_bytes(before)
+                    tmp.replace(p)
+                raise
     finally:
         tmp.unlink(missing_ok=True)
 
@@ -472,6 +575,8 @@ def add_stream_source(demo_id: str, filename: str, stream: BinaryIO,
                     if previous_hash.digest() == content_hash.digest():
                         p.unlink(missing_ok=True)
                         return existing
+            from . import portfolio_media
+            portfolio_media.persist_private(demo_id, rel)
             update(demo_id, lambda d: d["sources"].append(src))
     except BaseException:
         p.unlink(missing_ok=True)

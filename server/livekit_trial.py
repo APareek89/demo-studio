@@ -682,6 +682,11 @@ async def trial_token(demo_id: str, request: Request, response: Response = None)
     session_id = body.get("session_id") if isinstance(body, dict) else None
     if not isinstance(session_id, str) or not _SESSION.fullmatch(session_id):
         raise HTTPException(400, "A valid session_id is required")
+    from . import portfolio_auth as auth
+    await asyncio.to_thread(auth.require_visit, request, demo_id, session_id)
+    from .portfolio_example import is_cached_only
+    if is_cached_only(demo_id):
+        raise HTTPException(409, "This cached example supports typing and recorded narration; live voice is unavailable.")
     if ("demo_version" in body and (type(body["demo_version"]) is not int or body["demo_version"] != bundle.get("version"))
             or "knowledge_snapshot_id" in body and body["knowledge_snapshot_id"] != bundle.get("knowledge_snapshot_id")):
         raise HTTPException(409, "The published demo changed; reload before connecting")
@@ -695,6 +700,11 @@ async def trial_token(demo_id: str, request: Request, response: Response = None)
     room = "trial_" + secrets.token_hex(12)
     identity, agent_identity = "viewer_" + secrets.token_hex(8), "runtime_" + secrets.token_hex(8)
     bridge = TrialBridge(demo_id, session_id, room, identity, agent_identity, rtc, hosted=_hosted(), publication=publication)
+    # The server bridge carries the same verified visitor, not a fresh identity.
+    # RTC packet fields cannot replace these server-owned properties.
+    bridge.cookies = dict(request.cookies)
+    bridge.headers = dict(request.headers)
+    bridge.client = request.client
     _bridges[room] = bridge
     try:
         await bridge.connect(_worker_url(url), _token(api, key, secret, room, agent_identity, viewer=False))

@@ -12,6 +12,7 @@ from .principles import AUTHOR_CRAFT, PRINCIPLES, SIGNPOSTS, TRANSLATION_LADDER,
 # Brief the writer on grounded dialogue, per-line visuals and non-question closing statements.
 # server/schemas.py:ScriptOut describes the result; visuals.py:align separately audits image coverage afterward.
 AUTHOR_SYSTEM = """You are writing what a helpful human guide actually says to one visitor while showing a product.
+Keep the tone warm, professional and approachable, as though the visitor is beside you.
 The visitor should hear a person addressing them, not an announcer describing a catalogue. Use active, direct
 spoken sentences: let I/we/you occur naturally as the guide points out, explains or compares a supported detail.
 This is the voice of the whole tour, not a mandatory pronoun in every line or a prefix to add to a formal sentence.
@@ -20,7 +21,8 @@ the visitor can see or do. Write fresh dialogue for this product; do not rotate 
 Read it aloud to one person. If it sounds like brochure copy, rewrite the sentence itself rather than adding a
 friendly opener to it. A polished brand voice still speaks plainly and personally; avoid detached descriptions,
 formal noun phrases and runs of sentences beginning with an -ing clause. One or two short connected sentences
-can carry a complete batch. Facts, qualifications, selected duration and the reviewed plan remain binding.
+can carry a complete batch; vary their lengths naturally rather than giving every batch the same rhythm.
+Facts, qualifications, selected duration and the reviewed plan remain binding.
 
 Write it as ONE continuous talk in the plan's order, each part carrying the thought of the part before it. The
 Planner supplies an outline, not proof: its adjectives, benefit labels and suggested sentences are untrusted
@@ -161,7 +163,9 @@ Hard rules:
    outside —". Bad, because it is a catalogue entry: "Selected variants offer ventilated front seats."
    Where segments run in the planned order, end each one on a clause that lands the thought and turns
    towards the next, never on a specification.
-5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown.
+5. VOICE (G1). Spoken, not written: contractions, short clauses, numbers as words where natural, no markdown
+   or decorative symbols in spoken text. Use full stops and commas for breathing room; do not chain facts with
+   semicolons or em dashes. Keep each sentence simple without dropping a claim's qualification or required detail.
    Concrete nouns; no "smart/convenient/economical/premium/seamless". Relevance is not a garnish on a
    fact — it is the sentence, and the fact is the evidence inside it. Write what the thing does for the
    buyer, then the feature or figure that proves it, not the other way round. A line that is only a
@@ -189,8 +193,9 @@ Hard rules:
    it does not ask for readiness, a preference or permission. Leave it empty unless the plan asks for a closing statement.
    Do not ask again for context the customer already supplied. The intake's open context question is a separate flow.
 7. DELIVERY. Be a helpful, cheerful, attentive guide: gentle enthusiasm, a reassuring cadence for limitations, no
-   theatrical excitement, repeated superlatives or forced fillers. Use punctuation for natural pauses. Set each line's
-   delivery metadata to tone warm/upbeat/calm/reassuring; keep pace at 1.0 for a naturally timed guided script.
+   theatrical excitement, repeated superlatives or forced fillers. Let warmth come from an occasional specific
+   observation about the reviewed feature or choice, not scripted praise or pretending the visitor has replied.
+   Set each line's delivery metadata to tone warm/upbeat/calm/reassuring; keep pace at 1.0 for a naturally timed guided script.
    Choose occasional meaningful moments for more expressive delivery: a distinctive supported feature worth
    noticing, or a useful contrast the evidence establishes. On those lines only, set optional delivery.expressiveness
    to 0.7–0.8; omit it on most lines. At most one in four main lines may use it, and fewer is fine: this is not a quota,

@@ -1,0 +1,2904 @@
+{
+  "source_demo_id": "dm_1a2b9caf",
+  "metadata": {
+    "product": {
+      "name": "Sample handbook · silent preview",
+      "category": "car",
+      "url": "",
+      "summary": "Synthetic sample content with silent audio. Use your own sources to create a real narrated demo."
+    },
+    "sources": [
+      {
+        "id": "src_ce63bc",
+        "kind": "text",
+        "name": "handbook.txt.md",
+        "path": "sources/src_ce63bc_handbook.txt.md",
+        "url": "",
+        "mime": "application/octet-stream",
+        "size": 3247,
+        "role": "product",
+        "use_in_demo": true,
+        "revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+        "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+        "extraction_version": 2,
+        "origin": "uploaded"
+      },
+      {
+        "id": "src_273450",
+        "kind": "image",
+        "name": "angle.webp",
+        "path": "sources/src_273450_angle.webp",
+        "url": "",
+        "mime": "image/webp",
+        "size": 47528,
+        "role": "product",
+        "use_in_demo": true,
+        "play": "derived/src_273450_angle_clean.jpg"
+      }
+    ],
+    "settings": {
+      "tts_provider": "gemini",
+      "voice_name": "Sulafat",
+      "language": "en-IN",
+      "competition": "off",
+      "runtime_default_sites": "off",
+      "audience": "everyday",
+      "pitch_minutes": 3,
+      "visual_theme": "marine",
+      "languages": [
+        "en-IN"
+      ],
+      "rehearsal_questions": 12
+    }
+  },
+  "artifacts": {
+    "understanding.json": {
+      "product": {
+        "name": "Release handbook car",
+        "category": "car",
+        "summary": "Reviewed handbook controls",
+        "audience": "Everyday drivers"
+      },
+      "shots": [],
+      "images": [
+        {
+          "id": "im01",
+          "source_id": "src_273450",
+          "description": "Illustrative sample vehicle exterior",
+          "angle": "Side view",
+          "parts": [
+            {
+              "name": "headlamp",
+              "box": {
+                "x": 0.08,
+                "y": 0.12,
+                "w": 0.48,
+                "h": 0.3
+              },
+              "confidence": 0.92
+            },
+            {
+              "name": "alloy wheel",
+              "box": {
+                "x": 0.06,
+                "y": 0.52,
+                "w": 0.36,
+                "h": 0.42
+              },
+              "confidence": 0.81
+            }
+          ],
+          "quality": 4,
+          "full_product": true
+        }
+      ],
+      "facts": [
+        {
+          "kind": "feature",
+          "claim": "Handbook 0: Start at the driver seat, where the handbook identifies the adjustment controls",
+          "value": "Start at the driver seat, where the handbook identifies the adjustment controls. We will follow the reviewed controls and storage areas through the car.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 0",
+            "quote": "Start at the driver seat, where the handbook identifies the adjustment controls. We will follow the reviewed controls and storage areas through the car."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F001",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "bb56e8d48f2787b0d687bb0a089456d8f01437a186e6ff57932ee4ed608922fa",
+            "evidence_id": "ev_4c768266a52196d37d8dc407",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 1: The driver seat has a sliding base and an adjustable backrest",
+          "value": "The driver seat has a sliding base and an adjustable backrest. The handbook shows the separate controls beside the cushion, and recommends setting the seat while parked, before checking that the pedals and steering wheel are comfortably within reach.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 1",
+            "quote": "The driver seat has a sliding base and an adjustable backrest. The handbook shows the separate controls beside the cushion, and recommends setting the seat while parked, before checking that the pedals and steering wheel are comfortably within reach."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F002",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "fbe8c709b2d7b58281e117dd4437087bdfcb192b6bce76bc92b9ae51d3dcdf16",
+            "evidence_id": "ev_4bec969dda680d0eeee1e39a",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 2: The rear seat has a folding backrest with a release near its upper edge",
+          "value": "The rear seat has a folding backrest with a release near its upper edge. The handbook asks you to check the belt positions before folding it, then to push the backrest into its latch when returning it to an upright position.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 2",
+            "quote": "The rear seat has a folding backrest with a release near its upper edge. The handbook asks you to check the belt positions before folding it, then to push the backrest into its latch when returning it to an upright position."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F003",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "1d6d4737c2a750f838a782cfbc406aae696de9328dbfb00d4a1148a1599aa1e1",
+            "evidence_id": "ev_83d25d4e0c3edb9b42de8bed",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 3: The luggage compartment contains a removable floor panel above the storage tray",
+          "value": "The luggage compartment contains a removable floor panel above the storage tray. The guide shows the handle along the rear edge and describes lifting the panel before retrieving the tools; loose items should be secured before the car moves.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 3",
+            "quote": "The luggage compartment contains a removable floor panel above the storage tray. The guide shows the handle along the rear edge and describes lifting the panel before retrieving the tools; loose items should be secured before the car moves."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F004",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "d8357edfa17028204b7dd3d9a26a9b2ce629fbadcb9165887b63d44e114b66ed",
+            "evidence_id": "ev_02341a3f8156c0fd9f8600bd",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 4: The instrument display places the speed reading beside the warning lamps",
+          "value": "The instrument display places the speed reading beside the warning lamps. The handbook distinguishes a lamp that appears briefly at startup from one that remains lit while driving, and directs the driver to the matching warning section for the next action.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 4",
+            "quote": "The instrument display places the speed reading beside the warning lamps. The handbook distinguishes a lamp that appears briefly at startup from one that remains lit while driving, and directs the driver to the matching warning section for the next action."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F005",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "48efed2fd985e9db8e281265f250c60c8824258592b607a32ae051108e5de20a",
+            "evidence_id": "ev_c1cc98f62695a2ac90b220c3",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 5: The central screen includes a phone connection menu and a list of previously paired devices",
+          "value": "The central screen includes a phone connection menu and a list of previously paired devices. The guide describes opening that menu while parked, choosing the intended device, and confirming the matching request on the phone before using the available functions.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 5",
+            "quote": "The central screen includes a phone connection menu and a list of previously paired devices. The guide describes opening that menu while parked, choosing the intended device, and confirming the matching request on the phone before using the available functions."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F006",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "5c4b1fe4fb04ede8d0a31b33cda0a827e5da4faaf2791dd8f0e491b9e8a94404",
+            "evidence_id": "ev_da1722b96f70e1d80fa43e7e",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 6: The climate controls include temperature, fan speed and airflow direction",
+          "value": "The climate controls include temperature, fan speed and airflow direction. The handbook illustrates the windscreen setting separately from the face vents, and explains that the driver can choose the airflow direction before changing the fan speed to suit the cabin.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 6",
+            "quote": "The climate controls include temperature, fan speed and airflow direction. The handbook illustrates the windscreen setting separately from the face vents, and explains that the driver can choose the airflow direction before changing the fan speed to suit the cabin."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F007",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "7cfbe1c9791e07b353b8398b03d682b47cd07eddcf098f3d1fb6d1aca3b534e3",
+            "evidence_id": "ev_c7c768c76ced1ff84d239ea7",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 7: The door panel carries the window switches and a separate rear window lock",
+          "value": "The door panel carries the window switches and a separate rear window lock. The handbook labels the controls by position, describes the lock indicator, and asks the driver to check that the window openings are clear before operating a switch.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 7",
+            "quote": "The door panel carries the window switches and a separate rear window lock. The handbook labels the controls by position, describes the lock indicator, and asks the driver to check that the window openings are clear before operating a switch."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F008",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "6f0949ed7b08d5f068d09519f24dadb7b8e2cc108928042f5a77729a08795186",
+            "evidence_id": "ev_ff9d06b0cffa169cc565e549",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 8: The steering wheel has buttons for audio volume and the displayed information menu",
+          "value": "The steering wheel has buttons for audio volume and the displayed information menu. The handbook shows the two groups on opposite sides, labels their functions separately, and recommends learning the control positions while parked before using them during a journey.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 8",
+            "quote": "The steering wheel has buttons for audio volume and the displayed information menu. The handbook shows the two groups on opposite sides, labels their functions separately, and recommends learning the control positions while parked before using them during a journey."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F009",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "62685b7e2924502ef9037917fe4d8589368d84cddc9a889a216fca33af02fc80",
+            "evidence_id": "ev_0c24363cf3c0d25c9c686114",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 9: The handbook also identifies the reading lamps, cabin storage pockets and mirror adjustment control",
+          "value": "The handbook also identifies the reading lamps, cabin storage pockets and mirror adjustment control. Each has its own labelled diagram, so the next visit can use those diagrams to locate the controls in the actual car.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 9",
+            "quote": "The handbook also identifies the reading lamps, cabin storage pockets and mirror adjustment control. Each has its own labelled diagram, so the next visit can use those diagrams to locate the controls in the actual car."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F010",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "875fc24786d90b5abc3a6ebbb12b50e279e93840050e99ed0143f6a8cfecb77a",
+            "evidence_id": "ev_95edda5b8de70743a0a3dd59",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 10: The supplied handbook covers the controls discussed here",
+          "value": "The supplied handbook covers the controls discussed here. Variant availability and current written purchase terms still need the matching specification sheet and dealer document; those remain separate questions for the owner to resolve before a decision.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 10",
+            "quote": "The supplied handbook covers the controls discussed here. Variant availability and current written purchase terms still need the matching specification sheet and dealer document; those remain separate questions for the owner to resolve before a decision."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F011",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "9ace949252f07fb45679d02eb721666f508469c660ad17a1d3f36304965c09d5",
+            "evidence_id": "ev_42785a02ba49c61ca13b3114",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 11: The next step is to compare these documented controls with the actual car and the relevant variant sheet",
+          "value": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 11",
+            "quote": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F012",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "0ee7ca082c5e1107eb367d295f7f487d460e7b4a88af4b336b1b3f03c285da6e",
+            "evidence_id": "ev_dc50f2ac6867a52e3317f8f8",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 12: The steering column adjusts for height and reach",
+          "value": "The steering column adjusts for height and reach. Its locking lever sits below the wheel, so the driver can set the wheel position after moving the seat and then secure the column before setting off.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 12",
+            "quote": "The steering column adjusts for height and reach. Its locking lever sits below the wheel, so the driver can set the wheel position after moving the seat and then secure the column before setting off."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F013",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "fde509ce9278c7a2a6dddc87c1e3ac287fb0cd10e40fc1cab62ef1b228b7cd44",
+            "evidence_id": "ev_172d80e8f039258efa82b159",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        },
+        {
+          "kind": "feature",
+          "claim": "Handbook 13: The charging area includes a socket beside the front storage tray",
+          "value": "The charging area includes a socket beside the front storage tray. The socket has a protective cover, which opens to expose the connection and closes again when the socket is not being used.",
+          "source": {
+            "ref": "src_ce63bc",
+            "locator": "Section 13",
+            "quote": "The charging area includes a socket beside the front storage tray. The socket has a protective cover, which opens to expose the connection and closes again when the socket is not being used."
+          },
+          "confidence": 1.0,
+          "conditions": "",
+          "scope": {},
+          "truth": "stated",
+          "id": "F014",
+          "approved": true,
+          "edited": false,
+          "knowledge": {
+            "source_revision": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+            "assertion_hash": "46a2db35dc9f7f42ba31b178aae2eb8208fa935c547748c4d414cdb217ec217c",
+            "evidence_id": "ev_afd459ba762117a0afa5d1fd",
+            "evidence_path": "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json",
+            "extraction_version": 2,
+            "origin": "uploaded",
+            "source_url": "",
+            "fetched_at": ""
+          }
+        }
+      ],
+      "unknowns": [],
+      "brand": {
+        "tone": "Calm and conversational",
+        "voice_style": "Clear, unhurried guidance",
+        "dos": [
+          "Explain the handbook evidence in plain language.",
+          "Explain the handbook evidence in plain language.",
+          "Explain the handbook evidence in plain language."
+        ],
+        "donts": [
+          "Do not add claims beyond the source handbook.",
+          "Do not add claims beyond the source handbook.",
+          "Do not add claims beyond the source handbook."
+        ],
+        "persona_hint": "A helpful guide showing one visitor around the handbook."
+      },
+      "video_summaries": {},
+      "competitors": [],
+      "knowledge": {
+        "version": 1,
+        "conflicts": [],
+        "decisions": [],
+        "coverage": {
+          "extraction": [
+            {
+              "source_id": "src_ce63bc",
+              "chunks": 1,
+              "warnings": [],
+              "error": null
+            }
+          ],
+          "document_totals": {
+            "product:": {
+              "documents": 0,
+              "pages": 0
+            }
+          },
+          "duplicates": []
+        },
+        "diff": {
+          "added": [
+            "F001",
+            "F002",
+            "F003",
+            "F004",
+            "F005",
+            "F006",
+            "F007",
+            "F008",
+            "F009",
+            "F010",
+            "F011",
+            "F012",
+            "F013",
+            "F014"
+          ],
+          "changed": [],
+          "removed": [],
+          "unchanged": []
+        },
+        "reconciled_at": 1790765041.1139982
+      },
+      "image_map": {
+        "F002": [
+          "im01"
+        ],
+        "F009": [
+          "im01"
+        ],
+        "F013": [
+          "im01"
+        ]
+      }
+    },
+    "plan.json": {
+      "total_words": 495,
+      "playbook_version": "2026-09-23",
+      "customer_persona": "A first-time visitor exploring everyday vehicle controls",
+      "decision_frame": "Find the relevant handbook guidance before trying a control.",
+      "takeaway": "Each answer links back to a supplied handbook fact.",
+      "primary_outcome": "Understand where to find the key controls and their documented limitations.",
+      "supporting_outcomes": [
+        "Explore the seating and storage guidance.",
+        "See how cited answers connect to the presentation."
+      ],
+      "concerns": [],
+      "usps": [
+        {
+          "id": "usp-1",
+          "name": "Explore the seating controls",
+          "fact_ids": [
+            "F002"
+          ],
+          "stop_id": "area-1"
+        },
+        {
+          "id": "usp-2",
+          "name": "Understand the folding backrest",
+          "fact_ids": [
+            "F003"
+          ],
+          "stop_id": "area-2"
+        },
+        {
+          "id": "usp-3",
+          "name": "Locate the storage tray",
+          "fact_ids": [
+            "F004"
+          ],
+          "stop_id": "area-3"
+        }
+      ],
+      "segments": [
+        {
+          "id": "section-0",
+          "title": "Welcome to the handbook",
+          "role": "intro",
+          "goal": "Explain welcome to the handbook using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-0",
+          "fact_ids": [
+            "F001"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 22
+        },
+        {
+          "id": "section-11",
+          "title": "Plan your next step",
+          "role": "outcome",
+          "goal": "Explain plan your next step using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-11",
+          "fact_ids": [
+            "F012"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 22
+        },
+        {
+          "id": "section-1",
+          "title": "Adjust the driver seat",
+          "role": "proof",
+          "goal": "Explain adjust the driver seat using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-1",
+          "fact_ids": [
+            "F002"
+          ],
+          "usp_ids": [
+            "usp-1"
+          ],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-1",
+          "fundamental": true,
+          "word_budget": 32
+        },
+        {
+          "id": "section-2",
+          "title": "Fold the rear backrest",
+          "role": "proof",
+          "goal": "Explain fold the rear backrest using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-2",
+          "fact_ids": [
+            "F003"
+          ],
+          "usp_ids": [
+            "usp-2"
+          ],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-2",
+          "fundamental": true,
+          "word_budget": 52
+        },
+        {
+          "id": "section-3",
+          "title": "Find the storage tray",
+          "role": "proof",
+          "goal": "Explain find the storage tray using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-3",
+          "fact_ids": [
+            "F004"
+          ],
+          "usp_ids": [
+            "usp-3"
+          ],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-3",
+          "fundamental": true,
+          "word_budget": 32
+        },
+        {
+          "id": "section-4",
+          "title": "Set cabin temperature",
+          "role": "proof",
+          "goal": "Explain set cabin temperature using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-4",
+          "fact_ids": [
+            "F005"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-4",
+          "fundamental": false,
+          "word_budget": 32
+        },
+        {
+          "id": "section-5",
+          "title": "Use the reading lights",
+          "role": "proof",
+          "goal": "Explain use the reading lights using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-5",
+          "fact_ids": [
+            "F006"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-5",
+          "fundamental": false,
+          "word_budget": 32
+        },
+        {
+          "id": "section-6",
+          "title": "Adjust the mirrors",
+          "role": "proof",
+          "goal": "Explain adjust the mirrors using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-6",
+          "fact_ids": [
+            "F007"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-6",
+          "fundamental": false,
+          "word_budget": 32
+        },
+        {
+          "id": "section-7",
+          "title": "Secure your luggage",
+          "role": "proof",
+          "goal": "Explain secure your luggage using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-7",
+          "fact_ids": [
+            "F008"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-7",
+          "fundamental": false,
+          "word_budget": 32
+        },
+        {
+          "id": "section-8",
+          "title": "Find charging ports",
+          "role": "proof",
+          "goal": "Explain find charging ports using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-8",
+          "fact_ids": [
+            "F009"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-8",
+          "fundamental": false,
+          "word_budget": 32
+        },
+        {
+          "id": "section-12",
+          "title": "Understand the child lock",
+          "role": "proof",
+          "goal": "Explain understand the child lock using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-12",
+          "fact_ids": [
+            "F013"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-12",
+          "fundamental": false,
+          "word_budget": 52
+        },
+        {
+          "id": "section-13",
+          "title": "Keep the handbook handy",
+          "role": "proof",
+          "goal": "Explain keep the handbook handy using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-13",
+          "fact_ids": [
+            "F014"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": "area-13",
+          "fundamental": false,
+          "word_budget": 33
+        },
+        {
+          "id": "section-9",
+          "title": "Read the instrument display",
+          "role": "features",
+          "goal": "Explain read the instrument display using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-9",
+          "fact_ids": [
+            "F010"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 33
+        },
+        {
+          "id": "section-10",
+          "title": "Review safety guidance",
+          "role": "establish",
+          "goal": "Explain review safety guidance using the supplied evidence.",
+          "outcome": "The visitor can locate the corresponding handbook guidance.",
+          "topic": "area-10",
+          "fact_ids": [
+            "F011"
+          ],
+          "usp_ids": [],
+          "visual_refs": [
+            "im01"
+          ],
+          "priority_topic": true,
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 33
+        }
+      ],
+      "ctas": [
+        {
+          "id": "summary",
+          "label": "Review this visit",
+          "kind": "summary",
+          "url": "",
+          "primary": true,
+          "when": "always"
+        }
+      ],
+      "voice": {
+        "persona_name": "Alex",
+        "persona_description": "A patient handbook guide",
+        "tone": "Calm and conversational",
+        "sample_line": "Let’s explore the controls together. This local preview uses silent audio.",
+        "suggested_voice": "Sulafat",
+        "language": "en-IN"
+      },
+      "visual_gaps": [],
+      "intake": {
+        "q1": "What would you like to explore first?",
+        "q2": "",
+        "chips": [
+          {
+            "key": "seating",
+            "label": "Seating controls"
+          },
+          {
+            "key": "storage",
+            "label": "Storage"
+          },
+          {
+            "key": "safety",
+            "label": "Safety guidance"
+          }
+        ]
+      },
+      "state_questions": [],
+      "do_not_recommend_if": "Do not use this synthetic example as instructions for a real vehicle.",
+      "advance": "Browse a section, then ask about the driver-seat controls.",
+      "notes": "Synthetic handbook for local interface testing. Audio files are intentionally silent.",
+      "issues": [],
+      "narration_preparation": {
+        "version": 1,
+        "target_words": 495,
+        "identity": "ca8de10e52a16c3ad837111941e9603818c2a8f249f1b3d6d4bd399ff3cea934"
+      },
+      "guided_minimum_seconds": 180.0,
+      "guided_opening_words": 23,
+      "voice_sample_audio": "audio/7e03de36c53266ede864.wav"
+    },
+    "playbook.json": {
+      "category": "car",
+      "category_source": "inferred",
+      "stops": [
+        {
+          "id": "area-1",
+          "label": "Adjust the driver seat",
+          "kind": "fundamental",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F002"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-2",
+          "label": "Fold the rear backrest",
+          "kind": "fundamental",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F003"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-3",
+          "label": "Find the storage tray",
+          "kind": "fundamental",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F004"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-4",
+          "label": "Set cabin temperature",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F005"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-5",
+          "label": "Use the reading lights",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F006"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-6",
+          "label": "Adjust the mirrors",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F007"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-7",
+          "label": "Secure your luggage",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F008"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-8",
+          "label": "Find charging ports",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F009"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-12",
+          "label": "Understand the child lock",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F013"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        },
+        {
+          "id": "area-13",
+          "label": "Keep the handbook handy",
+          "kind": "differentiator",
+          "why_here": "Follow the documented controls.",
+          "fact_ids": [
+            "F014"
+          ],
+          "picture_ids": [],
+          "must_cover": true,
+          "gaps": []
+        }
+      ],
+      "usps": [
+        {
+          "id": "usp-1",
+          "name": "Explore the seating controls",
+          "fact_ids": [
+            "F002"
+          ],
+          "stop_id": "area-1"
+        },
+        {
+          "id": "usp-2",
+          "name": "Understand the folding backrest",
+          "fact_ids": [
+            "F003"
+          ],
+          "stop_id": "area-2"
+        },
+        {
+          "id": "usp-3",
+          "name": "Locate the storage tray",
+          "fact_ids": [
+            "F004"
+          ],
+          "stop_id": "area-3"
+        }
+      ],
+      "objections": [],
+      "evidence_gaps": [],
+      "notes": "Synthetic handbook. The single illustration is contextual; text carries the source evidence.",
+      "issues": [],
+      "library_version": "2026-09-23",
+      "library_key": "_generic",
+      "registry_hash": "bb0ffc1ee925aa6fdf2e",
+      "audience": "everyday",
+      "input_hash": "ecc78dc2dd88db053b06"
+    },
+    "script.json": {
+      "segments": [
+        {
+          "id": "section-0",
+          "title": "Welcome to the handbook",
+          "role": "intro",
+          "topic": "area-0",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "Start at the driver seat, where the handbook identifies the adjustment controls. We will follow the reviewed controls and storage areas through the car.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F001"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-0-L1",
+              "start": 0.0,
+              "duration": 12.63,
+              "exact": true,
+              "audio": "audio/488cf6df7a88e28abcac.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 22,
+          "planned_seconds": 11.6,
+          "start": 0.0,
+          "duration": 12.6,
+          "spoken": 12.6,
+          "measured": true
+        },
+        {
+          "id": "section-11",
+          "title": "Plan your next step",
+          "role": "outcome",
+          "topic": "area-11",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F012"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-11-L1",
+              "start": 12.6,
+              "duration": 17.37,
+              "exact": true,
+              "audio": "audio/182566a1cf8431d084a2.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 22,
+          "planned_seconds": 11.6,
+          "start": 12.6,
+          "duration": 17.4,
+          "spoken": 17.4,
+          "measured": true
+        },
+        {
+          "id": "section-1",
+          "title": "Adjust the driver seat",
+          "role": "proof",
+          "topic": "area-1",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The driver seat has a sliding base and an adjustable backrest. The handbook shows the separate controls beside the cushion, and recommends setting the seat while parked, before checking that the pedals and steering wheel are comfortably within reach.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F002"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-1-L1",
+              "start": 30.0,
+              "duration": 20.53,
+              "exact": true,
+              "audio": "audio/8ffd45d913ea0e372449.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-1",
+          "fundamental": true,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 30.0,
+          "duration": 20.5,
+          "spoken": 20.5,
+          "measured": true
+        },
+        {
+          "id": "section-2",
+          "title": "Fold the rear backrest",
+          "role": "proof",
+          "topic": "area-2",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The rear seat has a folding backrest with a release near its upper edge. The handbook asks you to check the belt positions before folding it, then to push the backrest into its latch when returning it to an upright position.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F003"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-2-L1",
+              "start": 50.5,
+              "duration": 21.58,
+              "exact": true,
+              "audio": "audio/801c61b205d7b63d723f.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-2",
+          "fundamental": true,
+          "word_budget": 52,
+          "planned_seconds": 27.4,
+          "start": 50.5,
+          "duration": 21.6,
+          "spoken": 21.6,
+          "measured": true
+        },
+        {
+          "id": "section-3",
+          "title": "Find the storage tray",
+          "role": "proof",
+          "topic": "area-3",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The luggage compartment contains a removable floor panel above the storage tray. The guide shows the handle along the rear edge and describes lifting the panel before retrieving the tools; loose items should be secured before the car moves.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F004"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-3-L1",
+              "start": 72.1,
+              "duration": 20.53,
+              "exact": true,
+              "audio": "audio/ac826d1819f9ff514314.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-3",
+          "fundamental": true,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 72.1,
+          "duration": 20.5,
+          "spoken": 20.5,
+          "measured": true
+        },
+        {
+          "id": "section-4",
+          "title": "Set cabin temperature",
+          "role": "proof",
+          "topic": "area-4",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The instrument display places the speed reading beside the warning lamps. The handbook distinguishes a lamp that appears briefly at startup from one that remains lit while driving, and directs the driver to the matching warning section for the next action.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F005"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-4-L1",
+              "start": 92.6,
+              "duration": 21.58,
+              "exact": true,
+              "audio": "audio/a6b9336a0532677d7a36.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-4",
+          "fundamental": false,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 92.6,
+          "duration": 21.6,
+          "spoken": 21.6,
+          "measured": true
+        },
+        {
+          "id": "section-5",
+          "title": "Use the reading lights",
+          "role": "proof",
+          "topic": "area-5",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The central screen includes a phone connection menu and a list of previously paired devices. The guide describes opening that menu while parked, choosing the intended device, and confirming the matching request on the phone before using the available functions.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F006"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-5-L1",
+              "start": 114.2,
+              "duration": 21.05,
+              "exact": true,
+              "audio": "audio/337c9b784ac6b9817d27.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-5",
+          "fundamental": false,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 114.2,
+          "duration": 21.1,
+          "spoken": 21.1,
+          "measured": true
+        },
+        {
+          "id": "section-6",
+          "title": "Adjust the mirrors",
+          "role": "proof",
+          "topic": "area-6",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The climate controls include temperature, fan speed and airflow direction. The handbook illustrates the windscreen setting separately from the face vents, and explains that the driver can choose the airflow direction before changing the fan speed to suit the cabin.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F007"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-6-L1",
+              "start": 135.3,
+              "duration": 21.05,
+              "exact": true,
+              "audio": "audio/f5326a300f988a8ca3b2.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-6",
+          "fundamental": false,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 135.3,
+          "duration": 21.1,
+          "spoken": 21.1,
+          "measured": true
+        },
+        {
+          "id": "section-7",
+          "title": "Secure your luggage",
+          "role": "proof",
+          "topic": "area-7",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The door panel carries the window switches and a separate rear window lock. The handbook labels the controls by position, describes the lock indicator, and asks the driver to check that the window openings are clear before operating a switch.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F008"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-7-L1",
+              "start": 156.3,
+              "duration": 21.05,
+              "exact": true,
+              "audio": "audio/3724926dc1d6425a51e4.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-7",
+          "fundamental": false,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 156.3,
+          "duration": 21.1,
+          "spoken": 21.1,
+          "measured": true
+        },
+        {
+          "id": "section-8",
+          "title": "Find charging ports",
+          "role": "proof",
+          "topic": "area-8",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The steering wheel has buttons for audio volume and the displayed information menu. The handbook shows the two groups on opposite sides, labels their functions separately, and recommends learning the control positions while parked before using them during a journey.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F009"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-8-L1",
+              "start": 177.4,
+              "duration": 21.05,
+              "exact": true,
+              "audio": "audio/b394d5e9cb39c09f08bb.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-8",
+          "fundamental": false,
+          "word_budget": 32,
+          "planned_seconds": 16.8,
+          "start": 177.4,
+          "duration": 21.1,
+          "spoken": 21.1,
+          "measured": true
+        },
+        {
+          "id": "section-12",
+          "title": "Understand the child lock",
+          "role": "proof",
+          "topic": "area-12",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The steering column adjusts for height and reach. Its locking lever sits below the wheel, so the driver can set the wheel position after moving the seat and then secure the column before setting off.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F013"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-12-L1",
+              "start": 198.4,
+              "duration": 18.42,
+              "exact": true,
+              "audio": "audio/a28523b0c840d5ec824a.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-12",
+          "fundamental": false,
+          "word_budget": 52,
+          "planned_seconds": 27.4,
+          "start": 198.4,
+          "duration": 18.4,
+          "spoken": 18.4,
+          "measured": true
+        },
+        {
+          "id": "section-13",
+          "title": "Keep the handbook handy",
+          "role": "proof",
+          "topic": "area-13",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The charging area includes a socket beside the front storage tray. The socket has a protective cover, which opens to expose the connection and closes again when the socket is not being used.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F014"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-13-L1",
+              "start": 216.8,
+              "duration": 17.37,
+              "exact": true,
+              "audio": "audio/67c9784764ae6e8c99ad.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": "area-13",
+          "fundamental": false,
+          "word_budget": 33,
+          "planned_seconds": 17.4,
+          "start": 216.8,
+          "duration": 17.4,
+          "spoken": 17.4,
+          "measured": true
+        },
+        {
+          "id": "section-9",
+          "title": "Read the instrument display",
+          "role": "features",
+          "topic": "area-9",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The handbook also identifies the reading lamps, cabin storage pockets and mirror adjustment control. Each has its own labelled diagram, so the next visit can use those diagrams to locate the controls in the actual car.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F010"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-9-L1",
+              "start": 234.2,
+              "duration": 18.95,
+              "exact": true,
+              "audio": "audio/3b18ede8307fe8785b32.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 33,
+          "planned_seconds": 17.4,
+          "start": 234.2,
+          "duration": 18.9,
+          "spoken": 18.9,
+          "measured": true
+        },
+        {
+          "id": "section-10",
+          "title": "Review safety guidance",
+          "role": "establish",
+          "topic": "area-10",
+          "outcome": "",
+          "usp_ids": [],
+          "lines": [
+            {
+              "text": "The supplied handbook covers the controls discussed here. Variant availability and current written purchase terms still need the matching specification sheet and dealer document; those remain separate questions for the owner to resolve before a decision.",
+              "step": "say",
+              "visual": {
+                "kind": "image",
+                "ref": "im01",
+                "focus": ""
+              },
+              "fact_ids": [
+                "F011"
+              ],
+              "card": "none",
+              "delivery": {},
+              "unverified": false,
+              "id": "section-10-L1",
+              "start": 253.2,
+              "duration": 18.95,
+              "exact": true,
+              "audio": "audio/779d5cfc97df06f19bdc.wav"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "stop_id": null,
+          "fundamental": false,
+          "word_budget": 33,
+          "planned_seconds": 17.4,
+          "start": 253.2,
+          "duration": 18.9,
+          "spoken": 18.9,
+          "measured": true
+        }
+      ],
+      "closing": [
+        {
+          "text": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review.",
+          "step": "say",
+          "visual": {
+            "kind": "image",
+            "ref": "im01",
+            "focus": ""
+          },
+          "fact_ids": [
+            "F012"
+          ],
+          "card": "none",
+          "delivery": {},
+          "unverified": false,
+          "id": "close-L1",
+          "start": 272.1,
+          "duration": 17.37,
+          "exact": true,
+          "audio": "audio/182566a1cf8431d084a2.wav"
+        }
+      ],
+      "intake_q1": "Welcome. What would you like to know about these controls?",
+      "intake_q2": "",
+      "narration_minimum": {
+        "minimum_seconds": 180.0,
+        "seconds": 194.21,
+        "sufficient": true,
+        "words": 369,
+        "measured": false,
+        "basis": "estimated",
+        "measured_seconds": 0,
+        "estimated_seconds": 194.21,
+        "route": [
+          "section-1",
+          "section-2",
+          "section-3",
+          "section-4",
+          "section-5",
+          "section-6",
+          "section-9",
+          "section-10"
+        ],
+        "duplicate_lines_excluded": 0
+      },
+      "narration_preparation": {
+        "version": 1,
+        "identity": "ca8de10e52a16c3ad837111941e9603818c2a8f249f1b3d6d4bd399ff3cea934",
+        "status": "ready",
+        "minimum_seconds": 180.0,
+        "duration_changed": false,
+        "target_words": 495,
+        "words": 517,
+        "missing_words": 0,
+        "attempts": 2,
+        "mock_preview": false,
+        "measured": false,
+        "seconds": 194.21,
+        "basis": "estimated",
+        "reason": "The supported draft is prepared for review; recording will verify its duration.",
+        "errors": [],
+        "current_recording": false,
+        "recorded_short": false,
+        "recording_incomplete": false
+      },
+      "runtime_overview": {
+        "text": "Start at the driver seat, where the handbook identifies the adjustment controls. We will follow the reviewed controls and storage areas through the car.",
+        "step": "say",
+        "visual": {
+          "kind": "image",
+          "ref": "im01",
+          "focus": ""
+        },
+        "fact_ids": [
+          "F001"
+        ],
+        "card": "none",
+        "delivery": {},
+        "unverified": false,
+        "id": "runtime-overview",
+        "audio": "audio/488cf6df7a88e28abcac.wav",
+        "duration_seconds": 12.63,
+        "duration_exact": true,
+        "duration_in_range": true
+      },
+      "issues": [
+        "section-11 (outcome): 33 words, over its budget of 22 — cut a whole idea, keeping the joins",
+        "section-1 (proof): 39 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-2 (proof): warning — well under budget; add the join or the moment (41 words, budget 52)",
+        "section-3 (proof): 39 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-4 (proof): 41 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-5 (proof): 40 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-6 (proof): 40 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-7 (proof): 40 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-8 (proof): 40 words, over its budget of 32 — cut a whole idea, keeping the joins",
+        "section-12 (proof): warning — well under budget; add the join or the moment (35 words, budget 52)"
+      ],
+      "version": 1,
+      "intake_audio": {
+        "q1": "audio/a1b280a7a9694520c073.wav"
+      },
+      "visual_audit": {
+        "method": "rules_fallback",
+        "model": null,
+        "line_count": 0,
+        "image_count": 0,
+        "missing_line_count": 0
+      },
+      "timeline": {
+        "total_seconds": 289.5,
+        "batches": [
+          {
+            "id": "section-0",
+            "title": "Welcome to the handbook",
+            "role": "intro",
+            "start": 0.0,
+            "duration": 12.6,
+            "spoken": 12.6,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 11.6,
+            "measured": true
+          },
+          {
+            "id": "section-11",
+            "title": "Plan your next step",
+            "role": "outcome",
+            "start": 12.6,
+            "duration": 17.4,
+            "spoken": 17.4,
+            "checkin": -0.0,
+            "over_20s": false,
+            "planned_seconds": 11.6,
+            "measured": true
+          },
+          {
+            "id": "section-1",
+            "title": "Adjust the driver seat",
+            "role": "proof",
+            "start": 30.0,
+            "duration": 20.5,
+            "spoken": 20.5,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-2",
+            "title": "Fold the rear backrest",
+            "role": "proof",
+            "start": 50.5,
+            "duration": 21.6,
+            "spoken": 21.6,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 27.4,
+            "measured": true
+          },
+          {
+            "id": "section-3",
+            "title": "Find the storage tray",
+            "role": "proof",
+            "start": 72.1,
+            "duration": 20.5,
+            "spoken": 20.5,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-4",
+            "title": "Set cabin temperature",
+            "role": "proof",
+            "start": 92.6,
+            "duration": 21.6,
+            "spoken": 21.6,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-5",
+            "title": "Use the reading lights",
+            "role": "proof",
+            "start": 114.2,
+            "duration": 21.1,
+            "spoken": 21.1,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-6",
+            "title": "Adjust the mirrors",
+            "role": "proof",
+            "start": 135.3,
+            "duration": 21.1,
+            "spoken": 21.1,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-7",
+            "title": "Secure your luggage",
+            "role": "proof",
+            "start": 156.3,
+            "duration": 21.1,
+            "spoken": 21.1,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-8",
+            "title": "Find charging ports",
+            "role": "proof",
+            "start": 177.4,
+            "duration": 21.1,
+            "spoken": 21.1,
+            "checkin": -0.0,
+            "over_20s": true,
+            "planned_seconds": 16.8,
+            "measured": true
+          },
+          {
+            "id": "section-12",
+            "title": "Understand the child lock",
+            "role": "proof",
+            "start": 198.4,
+            "duration": 18.4,
+            "spoken": 18.4,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 27.4,
+            "measured": true
+          },
+          {
+            "id": "section-13",
+            "title": "Keep the handbook handy",
+            "role": "proof",
+            "start": 216.8,
+            "duration": 17.4,
+            "spoken": 17.4,
+            "checkin": -0.0,
+            "over_20s": false,
+            "planned_seconds": 17.4,
+            "measured": true
+          },
+          {
+            "id": "section-9",
+            "title": "Read the instrument display",
+            "role": "features",
+            "start": 234.2,
+            "duration": 18.9,
+            "spoken": 18.9,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 17.4,
+            "measured": true
+          },
+          {
+            "id": "section-10",
+            "title": "Review safety guidance",
+            "role": "establish",
+            "start": 253.2,
+            "duration": 18.9,
+            "spoken": 18.9,
+            "checkin": 0.0,
+            "over_20s": false,
+            "planned_seconds": 17.4,
+            "measured": true
+          }
+        ],
+        "exact": true,
+        "planned_total_seconds": 271.6,
+        "measured": true
+      },
+      "voice_provider": "sarvam",
+      "voice_name": "priya",
+      "voice_failures": 0,
+      "voice_input_hash": "85e54b55e60e4946dbaa1e2d13af3f2332629198c68ee31c2debd94b0679c090"
+    },
+    "deck.json": {
+      "hero_image": "im01",
+      "intro_video": null,
+      "slides": [
+        {
+          "id": "sl00",
+          "segment_id": null,
+          "kind": "hero_open",
+          "title": "Release handbook car",
+          "topics": [],
+          "fact_ids": [],
+          "image_id": "im01",
+          "image_reason": "hero",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": false,
+              "proxy_reason": ""
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": false,
+          "role": "hero_open",
+          "fundamental": false
+        },
+        {
+          "id": "sl01",
+          "segment_id": "section-0",
+          "kind": "intro",
+          "title": "Welcome to the handbook",
+          "topics": [
+            "area-0"
+          ],
+          "fact_ids": [
+            "F001"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-0-L1",
+              "text": "Start at the driver seat, where the handbook identifies the adjustment controls. We will follow the reviewed controls and storage areas through the car.",
+              "fact_ids": [
+                "F001"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "intro",
+          "fundamental": false
+        },
+        {
+          "id": "sl02",
+          "segment_id": "section-11",
+          "kind": "outcome",
+          "title": "Plan your next step",
+          "topics": [
+            "area-11"
+          ],
+          "fact_ids": [
+            "F012"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-11-L1",
+              "text": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review.",
+              "fact_ids": [
+                "F012"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "outcome",
+          "fundamental": false
+        },
+        {
+          "id": "sl03",
+          "segment_id": "section-1",
+          "kind": "proof",
+          "title": "Adjust the driver seat",
+          "topics": [
+            "area-1"
+          ],
+          "fact_ids": [
+            "F002"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-1-L1",
+              "text": "The driver seat has a sliding base and an adjustable backrest. The handbook shows the separate controls beside the cushion, and recommends setting the seat while parked, before checking that the pedals and steering wheel are comfortably within reach.",
+              "fact_ids": [
+                "F002"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [
+            "usp-1"
+          ],
+          "priority": true,
+          "role": "proof",
+          "fundamental": true
+        },
+        {
+          "id": "sl04",
+          "segment_id": "section-2",
+          "kind": "proof",
+          "title": "Fold the rear backrest",
+          "topics": [
+            "area-2"
+          ],
+          "fact_ids": [
+            "F003"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-2-L1",
+              "text": "The rear seat has a folding backrest with a release near its upper edge. The handbook asks you to check the belt positions before folding it, then to push the backrest into its latch when returning it to an upright position.",
+              "fact_ids": [
+                "F003"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [
+            "usp-2"
+          ],
+          "priority": true,
+          "role": "proof",
+          "fundamental": true
+        },
+        {
+          "id": "sl05",
+          "segment_id": "section-3",
+          "kind": "proof",
+          "title": "Find the storage tray",
+          "topics": [
+            "area-3"
+          ],
+          "fact_ids": [
+            "F004"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-3-L1",
+              "text": "The luggage compartment contains a removable floor panel above the storage tray. The guide shows the handle along the rear edge and describes lifting the panel before retrieving the tools; loose items should be secured before the car moves.",
+              "fact_ids": [
+                "F004"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [
+            "usp-3"
+          ],
+          "priority": true,
+          "role": "proof",
+          "fundamental": true
+        },
+        {
+          "id": "sl06",
+          "segment_id": "section-4",
+          "kind": "proof",
+          "title": "Set cabin temperature",
+          "topics": [
+            "area-4"
+          ],
+          "fact_ids": [
+            "F005"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-4-L1",
+              "text": "The instrument display places the speed reading beside the warning lamps. The handbook distinguishes a lamp that appears briefly at startup from one that remains lit while driving, and directs the driver to the matching warning section for the next action.",
+              "fact_ids": [
+                "F005"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl07",
+          "segment_id": "section-5",
+          "kind": "proof",
+          "title": "Use the reading lights",
+          "topics": [
+            "area-5"
+          ],
+          "fact_ids": [
+            "F006"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-5-L1",
+              "text": "The central screen includes a phone connection menu and a list of previously paired devices. The guide describes opening that menu while parked, choosing the intended device, and confirming the matching request on the phone before using the available functions.",
+              "fact_ids": [
+                "F006"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl08",
+          "segment_id": "section-6",
+          "kind": "proof",
+          "title": "Adjust the mirrors",
+          "topics": [
+            "area-6"
+          ],
+          "fact_ids": [
+            "F007"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-6-L1",
+              "text": "The climate controls include temperature, fan speed and airflow direction. The handbook illustrates the windscreen setting separately from the face vents, and explains that the driver can choose the airflow direction before changing the fan speed to suit the cabin.",
+              "fact_ids": [
+                "F007"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl09",
+          "segment_id": "section-7",
+          "kind": "proof",
+          "title": "Secure your luggage",
+          "topics": [
+            "area-7"
+          ],
+          "fact_ids": [
+            "F008"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-7-L1",
+              "text": "The door panel carries the window switches and a separate rear window lock. The handbook labels the controls by position, describes the lock indicator, and asks the driver to check that the window openings are clear before operating a switch.",
+              "fact_ids": [
+                "F008"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl10",
+          "segment_id": "section-8",
+          "kind": "proof",
+          "title": "Find charging ports",
+          "topics": [
+            "area-8"
+          ],
+          "fact_ids": [
+            "F009"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-8-L1",
+              "text": "The steering wheel has buttons for audio volume and the displayed information menu. The handbook shows the two groups on opposite sides, labels their functions separately, and recommends learning the control positions while parked before using them during a journey.",
+              "fact_ids": [
+                "F009"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl11",
+          "segment_id": "section-12",
+          "kind": "proof",
+          "title": "Understand the child lock",
+          "topics": [
+            "area-12"
+          ],
+          "fact_ids": [
+            "F013"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-12-L1",
+              "text": "The steering column adjusts for height and reach. Its locking lever sits below the wheel, so the driver can set the wheel position after moving the seat and then secure the column before setting off.",
+              "fact_ids": [
+                "F013"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl12",
+          "segment_id": "section-13",
+          "kind": "proof",
+          "title": "Keep the handbook handy",
+          "topics": [
+            "area-13"
+          ],
+          "fact_ids": [
+            "F014"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-13-L1",
+              "text": "The charging area includes a socket beside the front storage tray. The socket has a protective cover, which opens to expose the connection and closes again when the socket is not being used.",
+              "fact_ids": [
+                "F014"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "proof",
+          "fundamental": false
+        },
+        {
+          "id": "sl13",
+          "segment_id": "section-9",
+          "kind": "features",
+          "title": "Read the instrument display",
+          "topics": [
+            "area-9"
+          ],
+          "fact_ids": [
+            "F010"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "pan_left",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-9-L1",
+              "text": "The handbook also identifies the reading lamps, cabin storage pockets and mirror adjustment control. Each has its own labelled diagram, so the next visit can use those diagrams to locate the controls in the actual car.",
+              "fact_ids": [
+                "F010"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "features",
+          "fundamental": false
+        },
+        {
+          "id": "sl14",
+          "segment_id": "section-10",
+          "kind": "establish",
+          "title": "Review safety guidance",
+          "topics": [
+            "area-10"
+          ],
+          "fact_ids": [
+            "F011"
+          ],
+          "image_id": "im01",
+          "image_reason": "Author-selected illustration — pixel audit unavailable",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": true,
+              "proxy_reason": "Author-selected illustration — pixel audit unavailable"
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "section-10-L1",
+              "text": "The supplied handbook covers the controls discussed here. Variant availability and current written purchase terms still need the matching specification sheet and dealer document; those remain separate questions for the owner to resolve before a decision.",
+              "fact_ids": [
+                "F011"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": true,
+          "role": "establish",
+          "fundamental": false
+        },
+        {
+          "id": "sl15",
+          "segment_id": null,
+          "kind": "closing",
+          "title": "Where that leaves you",
+          "topics": [],
+          "fact_ids": [
+            "F012"
+          ],
+          "image_id": "im01",
+          "image_reason": "hero",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": false,
+              "proxy_reason": ""
+            }
+          ],
+          "motion": "none",
+          "callouts": [],
+          "lines": [
+            {
+              "id": "close-L1",
+              "text": "The next step is to compare these documented controls with the actual car and the relevant variant sheet. Bring the unresolved purchase questions to the dealer with the written terms available for review.",
+              "fact_ids": [
+                "F012"
+              ],
+              "step": "say"
+            }
+          ],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": false,
+          "role": "closing",
+          "fundamental": false
+        },
+        {
+          "id": "sl16",
+          "segment_id": null,
+          "kind": "hero_close",
+          "title": "Release handbook car",
+          "topics": [],
+          "fact_ids": [],
+          "image_id": "im01",
+          "image_reason": "hero",
+          "media": [
+            {
+              "image_id": "im01",
+              "from_line": 0,
+              "proxy": false,
+              "proxy_reason": ""
+            }
+          ],
+          "motion": "zoom_in",
+          "callouts": [],
+          "lines": [],
+          "checkin": "",
+          "deeper": [],
+          "usp_ids": [],
+          "priority": false,
+          "role": "hero_close",
+          "fundamental": false
+        }
+      ],
+      "version": 1,
+      "script_version": 1,
+      "method": "local synthetic fixture",
+      "issues": []
+    },
+    "fillers.json": {
+      "ack_with_context": {
+        "text": "Thanks for sharing that — I'll keep the demo focused on what matters to you.",
+        "audio": "audio/cbadf2692283185e49b6.wav"
+      },
+      "ack_no_context": {
+        "text": "No problem — you can steer me at any time.",
+        "audio": "audio/59735131b31d828e8cdf.wav"
+      },
+      "bridge_to_custom": {
+        "text": "Now, let me get to what you asked about.",
+        "audio": "audio/f2c8dce2fdb05228c19f.wav"
+      },
+      "hold_on_question": {
+        "text": "Let me check that.",
+        "audio": "audio/c1f0576ba81f39456027.wav"
+      },
+      "hold_on_lookup": {
+        "text": "Give me one moment, please, while I pull that up.",
+        "audio": "audio/144bbc9c59dcc4017029.wav"
+      },
+      "back_to_demo": {
+        "text": "Let's get back to where we were.",
+        "audio": "audio/eb8dd9f69791254be540.wav"
+      },
+      "nudge_continue": {
+        "text": "I'll carry on — stop me whenever you like.",
+        "audio": "audio/f192ba0305bdf83a677b.wav"
+      },
+      "put_in_writing": {
+        "text": "My voice dropped for a moment — I've put the answer on screen for you.",
+        "audio": "audio/0655853bc5aae4b5f906.wav"
+      },
+      "still_working": {
+        "text": "Give me one moment, please — I'm tailoring this to what you just told me.",
+        "audio": "audio/c2f21a0907786aca94c2.wav"
+      },
+      "good": {
+        "text": "Good — moving on.",
+        "audio": "audio/a9c9cf181c86cb1ee117.wav"
+      },
+      "glad": {
+        "text": "Glad that helps.",
+        "audio": "audio/8bfe538b13ba3de400e2.wav"
+      },
+      "did_that_answer": {
+        "text": "Did that answer it?",
+        "audio": "audio/573e742ba2744e0b4e77.wav"
+      },
+      "clearer": {
+        "text": "Is that clearer?",
+        "audio": "audio/65655a829797eac1944c.wav"
+      },
+      "lets_go": {
+        "text": "Alright — here we go.",
+        "audio": "audio/80b36438f992e2f348cd.wav"
+      },
+      "focus_first": {
+        "text": "Got it — let me show you the part that matters most for that first.",
+        "audio": "audio/1650280ef87fb82dd62d.wav"
+      },
+      "how_i_go": {
+        "text": "Here's how I'll go about it.",
+        "audio": "audio/f015cbe3e1e4df41d65e.wav"
+      },
+      "no_guess": {
+        "text": "I'm not sure about that from the material I've been given, so I won't guess. I can have a salesperson call you about it.",
+        "audio": "audio/25200f60d0dfd59a8f9a.wav"
+      },
+      "before_video": {
+        "text": "First, here's a quick film to bring it to life. Then I'll walk you through it around what you just told me.",
+        "audio": "audio/c390a46c5177a45eac41.wav"
+      },
+      "after_video": {
+        "text": "Now, let's get into what matters to you.",
+        "audio": "audio/006006352978776382eb.wav"
+      }
+    },
+    "visual-audit.json": {
+      "method": "rules_fallback",
+      "model": null,
+      "lines": [],
+      "images": [],
+      "changes": [],
+      "catalogue": [
+        "im01 · Side view · Illustrative sample vehicle exterior"
+      ],
+      "unused_after": [],
+      "proposals": []
+    }
+  },
+  "silent_audio": {
+    "audio/006006352978776382eb.wav": {
+      "frames": 67368,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/0655853bc5aae4b5f906.wav": {
+      "frames": 126315,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/144bbc9c59dcc4017029.wav": {
+      "frames": 84210,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/1650280ef87fb82dd62d.wav": {
+      "frames": 126315,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/182566a1cf8431d084a2.wav": {
+      "frames": 277894,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/25200f60d0dfd59a8f9a.wav": {
+      "frames": 202105,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/337c9b784ac6b9817d27.wav": {
+      "frames": 336842,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/3724926dc1d6425a51e4.wav": {
+      "frames": 336842,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/3b18ede8307fe8785b32.wav": {
+      "frames": 303157,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/488cf6df7a88e28abcac.wav": {
+      "frames": 202105,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/573e742ba2744e0b4e77.wav": {
+      "frames": 33684,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/59735131b31d828e8cdf.wav": {
+      "frames": 84210,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/65655a829797eac1944c.wav": {
+      "frames": 25263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/67c9784764ae6e8c99ad.wav": {
+      "frames": 277894,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/779d5cfc97df06f19bdc.wav": {
+      "frames": 303157,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/7e03de36c53266ede864.wav": {
+      "frames": 25263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/801c61b205d7b63d723f.wav": {
+      "frames": 345263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/80b36438f992e2f348cd.wav": {
+      "frames": 42105,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/8bfe538b13ba3de400e2.wav": {
+      "frames": 25263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/8ffd45d913ea0e372449.wav": {
+      "frames": 328421,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/a1b280a7a9694520c073.wav": {
+      "frames": 84210,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/a28523b0c840d5ec824a.wav": {
+      "frames": 294736,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/a6b9336a0532677d7a36.wav": {
+      "frames": 345263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/a9c9cf181c86cb1ee117.wav": {
+      "frames": 33684,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/ac826d1819f9ff514314.wav": {
+      "frames": 328421,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/b394d5e9cb39c09f08bb.wav": {
+      "frames": 336842,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/c1f0576ba81f39456027.wav": {
+      "frames": 33684,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/c2f21a0907786aca94c2.wav": {
+      "frames": 126315,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/c390a46c5177a45eac41.wav": {
+      "frames": 185263,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/cbadf2692283185e49b6.wav": {
+      "frames": 126315,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/eb8dd9f69791254be540.wav": {
+      "frames": 58947,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/f015cbe3e1e4df41d65e.wav": {
+      "frames": 50526,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/f192ba0305bdf83a677b.wav": {
+      "frames": 75789,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/f2c8dce2fdb05228c19f.wav": {
+      "frames": 75789,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    },
+    "audio/f5326a300f988a8ca3b2.wav": {
+      "frames": 336842,
+      "rate": 16000,
+      "channels": 1,
+      "width": 2
+    }
+  },
+  "assets": {
+    "sources/src_273450_angle.webp": "aac6a45d57b339eeea71879489a596fd883ef29d610834031082b7004851f5b0",
+    "sources/src_ce63bc_handbook.txt.md": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+    "derived/src_273450_angle_clean.jpg": "d93863f675e9632644dd0f006024550dd7219cabee9c642da4061eb05eaf2297",
+    "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.bin": "bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4",
+    "knowledge/sources/src_ce63bc/bcf7603d3a631658990a7807ca3f6a0011362c9b2259a048f17606e41ab427e4.extract-v2.json": "33069121cb2fe0e7e6c091c6f43387f255839a9dbd9142215116091f04ca659b"
+  },
+  "fixture": "Synthetic handbook and silent WAVs; no provider or customer data"
+}

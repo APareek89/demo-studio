@@ -24,6 +24,43 @@ RECLINE={"id":"F197","kind":"feature","claim":"Interior comfort and convenience 
 
 
 class ConversationContract(unittest.TestCase):
+    def test_brief_acknowledgment_and_direct_fact_keep_the_normal_answer_path(self):
+        decision=TurnDecision(action="answer",answered=True,sentences=[
+            SpokenClaim(text="Got it.",kind="context"),
+            SpokenClaim(text="The CRETA has a standard 60:40 split rear seat.",kind="fact",fact_ids=["F096"])])
+        result,errors=rg.validate_decision(decision.model_dump(),[SPLIT],"Tell me about the rear seats.")
+        self.assertFalse(errors)
+        self.assertTrue(result["answered"])
+        self.assertEqual(result["answer"],"Got it. The CRETA has a standard 60:40 split rear seat.")
+        self.assertEqual(result["fact_ids"],["F096"])
+        self.assertFalse(result["clarifying_question"])
+
+    def test_spoken_numbers_and_short_sentences_retain_scope(self):
+        fact={"id":"F1","kind":"feature","claim":"Airbags","value":"Six airbags are standard.",
+              "conditions":"India, model year 2026, all variants","scope":{"market":"India","year":"2026"},"approved":True}
+        text="For the 2026 India model, you get six airbags as standard on all variants."
+        result,errors=rg.validate_decision({"action":"answer","answered":True,"sentences":[
+            {"text":text,"kind":"fact","fact_ids":["F1"]}]},[fact],"How many airbags does the 2026 India model have?")
+        self.assertFalse(errors)
+        self.assertEqual(result["answer"],text)
+        self.assertEqual(result["fact_ids"],["F1"])
+        self.assertTrue(result["answered"])
+        self.assertFalse(result["clarifying_question"])
+
+    def test_conversational_preface_cannot_invent_customer_context_or_benefits(self):
+        for preface in ("You mentioned that your family needs rear seat space.",
+                        "That will make your commute more comfortable.",
+                        "Great, you have chosen the perfect car for your family."):
+            with self.subTest(preface=preface):
+                result,errors=rg.validate_decision({"action":"answer","answered":True,"sentences":[
+                    {"text":preface,"kind":"context","fact_ids":[]},
+                    {"text":"The CRETA has a standard 60:40 split rear seat.","kind":"fact","fact_ids":["F096"]}]},
+                    [SPLIT],"Tell me about the rear seats.")
+                self.assertTrue(errors)
+                self.assertEqual(result["answer"],"The CRETA has a standard 60:40 split rear seat.")
+                self.assertEqual(result["fact_ids"],["F096"])
+                self.assertFalse(result["clarifying_question"])
+
     def test_old_decisions_keep_optional_defaults(self):
         decision=TurnDecision(action="answer",sentences=[{"text":"I cannot guarantee that.","kind":"limitation"}])
         self.assertIsNone(decision.clarification_act)

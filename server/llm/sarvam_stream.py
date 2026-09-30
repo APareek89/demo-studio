@@ -151,7 +151,10 @@ async def stream_tts(text: str, speaker="priya", language="en-IN", pace=1.0, *, 
             await ws.send(json.dumps({"type": "config", "data": {
                 "speaker": speaker, "language_code": lang_code(language), "pace": float(pace),
                 **({"temperature": temperature} if temperature is not None else {}),
+                # Explicit Sarvam default. Bitrate does not compress linear16:
+                # the player still receives mono PCM16 at RATE (384 kbps).
                 "speech_sample_rate": RATE, "output_audio_codec": "linear16",
+                "output_audio_bitrate": "128k",
                 "min_buffer_size": 30, "max_chunk_length": 160}}))
             await ws.send(json.dumps({"type": "text", "data": {"text": text}}))
             submitted = True

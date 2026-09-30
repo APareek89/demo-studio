@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="lovable-ui" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Demo Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/web/vendor/lovable-tokens.css">
+<link rel="stylesheet" href="/web/vendor/lovable-components.css">
 <link rel="stylesheet" href="/web/styles.css?v=3d7">
 <link rel="stylesheet" href="/web/design-system.css">
 <link rel="stylesheet" href="/web/studio-ui.css">
 <link rel="stylesheet" href="/web/insights-ui.css">
 <link rel="stylesheet" href="/web/player-ui.css">
+<link rel="stylesheet" href="/web/portfolio-theme.css">
 <link rel="icon" type="image/svg+xml" href="/web/brand.svg">
 </head>
 <body>
@@ -25,12 +28,15 @@
     <a href="#/playground" data-tab="playground">Playground</a>
     <a href="#/observability" data-tab="observability">Observability</a>
   </nav>
-  <details class="connection-menu"><summary aria-label="Provider configuration"><span class="connection-dot"></span><span>Workspace</span><span class="workspace-avatar">DS</span></summary>
-    <div class="connection-panel"><strong>Provider configuration</strong><p>Key presence only. Live availability may vary.</p><div class="health" id="health"><span class="k" data-k="anthropic">Claude</span><span class="k" data-k="gemini">Gemini</span><span class="k" data-k="runware">Runware</span><span class="k" data-k="sarvam">Sarvam</span></div></div>
-  </details>
+  <div class="portfolio-account">
+    <button class="btn icon-only" id="themeToggle" type="button" aria-label="Switch to dark theme"></button>
+    <span id="accountEmail" class="account-email"></span>
+    <button class="btn" id="accountAction" type="button">Sign in</button>
+  </div>
 </header>
 <main id="main" tabindex="-1"></main>
 <div id="toasts" class="toasts"></div>
-<script type="module" src="/web/app.js?v=3e0"></script>
+<script src="/web/vendor/lucide.min.js"></script>
+<script type="module" src="/web/app.js?v=portfolio1"></script>
 </body>
 </html>

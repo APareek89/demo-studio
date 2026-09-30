@@ -1,5 +1,32 @@
 # Loop.MD — Demo Studio
 
+## Portfolio integration — 30 September 2026 (live and final real-mode smoke verified)
+
+Current integration core: deck 445/445, acceptance 24/24, smoke 3/3 phases, release 24/24 API/graph/publication checks plus 4 explicit browser skips. All four isolated processes record zero outbound attempts. Root separately used the Codex in-app browser for local and AWS signup→empty workspace, sign-in/out, light/dark surfaces, creator-owned BMW example, F077 engine answer with its variant condition, honest unsupported-query limit, direct prepared Restart, lead-free recap and saved visit. The final BMW review was muted. Four skipped terminal-browser checks are not counted as executed.
+
+New free checks: `portfolio_visit_contract.mjs` 12/12 (actual adapter with fake HTTP); `portfolio_example_contract.py` 5/5 (real factory/routes, isolated disk, blocked sockets, poisoned paid adapters even when config mock flag is false); `summary_usage_contract.py` 8/8. All 26 nonvendor browser files parse explicitly as ESmodules. Auth/data/transport 14 checks, mocked media fallback 14 checks, and the real Linux sandboxed crawler check pass.
+
+Hosted API verification proves private creator A/B and visitor A/B isolation, cross-owner/anonymous source denial, CSRF and revoked-session denial, immutable public media and private owner-scoped S3 version/hash readback. All 96 published BMW media hashes match. Native LiveKit typed transport passes a cited answer, matching slide and saved recap, with the runtime and viewer observed in the native room. Its browser was muted, microphone capture disabled, and its fixture intentionally synthetic/silent; no microphone, acoustic or synthetic-PCM transport claim follows.
+
+The one authorized ordinary live HTTP Build completed normal Voice→Bundle and publication: exactly one successful Sarvam Bulbul v3 request regenerated a 16-character filler into 1.195 s of audio, with 50 recordings unchanged. All six approvals and the main 122.64 s narration against 120 s were preserved. Root then read back the published bundle and exact audio over HTTPS without further provider calls. Estimated cost ₹0.048 / $0.000571 uses ₹3 per 1,000 characters and assumed ₹84/USD, not a billed invoice. This is one real cached Build with one regenerated clip, not fully uncached authoring/narration or listening acceptance. Final image `2ddff5009571aec9` is healthy in ordinary real mode (auth enabled, mock disabled; no proof guard command or mounts). Root repeated the muted cached start, prepared-limit answer, direct Restart and saved lead-free recap with no browser errors or warnings.
+
+Retained initial failures: removed FastAPI startup API; stale client-generated visit-ID assertion; obsolete raw-summary-error assertion; home hero parenthesis defect missed by ambiguous Node module parsing; and exact reviewed secret-scan false positives. The secret guard validates 26 reviewed lines and their exact fingerprints. Final history, complete-index and staged-diff scans are required against the staged release tree. Evidence is retained outside the repository with the release operator, including failed attempts; no private credentials or customer records are published here.
+
+
+## Conversational instruction refinement — 26 September 2026
+
+Finite QA, loop off. Prompt-only Author/live/FAQ editorial changes preserve all non-prompt application AST, audio settings and reviewed data. Baseline and final core: deck445/445, acceptance24/24, smoke3/3. Final script prompt53/53, narrative roles14/14, speech style30/30, expression20/20, runtime conversation21/21 (three new validator cases), acts30/30, repair106/106, graph130/130, QA policy12/12, FAQ plain language21/21, FAQ cache27/27, FAQ scope19/19, runtime plain language25/25 and full mock release28/28. Seventeen suites use isolated DATA/GRAPH, MOCK_LLM=1, cloud off, blank keys and blocked sockets; all report zero outbound attempts. Full mock measures194.22seconds of synthetic narration, not real speech quality. Python compilation, player JavaScript syntax and whitespace checks pass.
+
+New cases retain a brief acknowledgment plus cited answer as an ordinary turn, preserve spoken quantities/scope and reject invented customer context/benefits while keeping the supported answer. [Receipt](docs/qa/human-guide-prompts-2026-09-26.md); raw logs `output/human-guide-prompts-20260926-qa/`. No paid generation, existing-demo recording change or master/GitHub/AWS release. Free checks establish plumbing and guard behavior, not that an LLM will obey the new prose or sound more human.
+
+## Explicit Sarvam bitrate and BMW listening comparison — 26 September 2026
+
+Finite QA, loop off. One Sarvam streaming request field now explicitly sends the documented default `output_audio_bitrate: "128k"`; raw PCM format/rate and all turn ownership remain unchanged. Local deck445/445, acceptance24/24, smoke3/3, Sarvam streaming19/19, speech style30/30 and runtime delivery27/27 pass. Six isolated suites use MOCK_LLM=1, separate DATA/GRAPH and blocked sockets; zero outbound attempts. Mocked protocol tests replace the provider connection when temporarily exercising the non-mock request branch. Raw logs: `output/audio-bitrate-20260926-qa/`.
+
+This is not a measured voice-quality improvement or an AWS release. Existing WAV narration is already lossless; a separate same-recording128kbps MP3 comparison isolates encoding without paid synthesis. No new provider or core graph change.
+
+Comparison conversion43/43 across14 existing clips; browser10/10 including original/MP3 seek retention, play-all/stop and390px layout. Initial local static server lacked Range support; the preview server was corrected before acceptance. [Receipt](docs/qa/audio-bitrate-2026-09-26.md); no original recordings or application data were rewritten.
+
 
 ## Mobile correction — 26 September 2026
 

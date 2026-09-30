@@ -1,0 +1,43 @@
+// Real API and visit adapters with a fake HTTP boundary; no browser or network.
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
+const apiUrl = moduleUrl(await readFile(new URL('../web/api.js', import.meta.url), 'utf8'));
+const source = (await readFile(new URL('../web/player/visit-api.js', import.meta.url), 'utf8'))
+  .replace("'/web/api.js'", JSON.stringify(apiUrl));
+const requests = [];
+let visits = 0;
+globalThis.fetch = async (path, options) => {
+  const body = options.body instanceof FormData ? Object.fromEntries(options.body.entries()) : JSON.parse(options.body);
+  requests.push({ path, body });
+  const result = path.endsWith('/visit') ? { session_id:`s_fixture_${++visits}` } : path.endsWith('/stt') ? { transcript:'hello' } : { url:'/fixture.wav' };
+  return new Response(JSON.stringify(result), { status:200, headers:{ 'content-type':'application/json' } });
+};
+const beacons = [];
+Object.defineProperty(globalThis, 'navigator', { value:{ sendBeacon:(path, body) => { beacons.push({path,body}); return true; } }, configurable:true });
+const { createVisitApi } = await import(moduleUrl(source));
+const first = await createVisitApi('dm_aaaaaaaa');
+const second = await createVisitApi('dm_bbbbbbbb');
+assert.equal(first.sessionId, 's_fixture_1');
+assert.equal(second.sessionId, 's_fixture_2');
+await first.tts('hello');
+await second.tts_lang('hi', 'en-IN');
+assert.equal(requests.at(-2).body.session_id, first.sessionId);
+assert.equal(requests.at(-1).body.session_id, second.sessionId);
+await first.stt(new Blob(['audio']), 'en-IN');
+assert.equal(requests.at(-1).body.session_id, first.sessionId);
+assert.equal(requests.at(-1).body.language, 'en-IN');
+const next = await first.newVisit();
+await first.tts('new visit');
+assert.equal(requests.at(-1).body.session_id, next);
+await first.saveSession({ id:first.sessionId, ended:true });
+assert.equal(requests.at(-1).body.id, 's_fixture_1', 'A late old-visit save must retain its original identity');
+first.beacon({ id:next, ended:true });
+assert.equal(JSON.parse(await beacons[0].body.text()).id, next);
+await first.qa({ session_id:next, question:'hello' });
+assert.equal(requests.at(-1).body.session_id, next);
+globalThis.fetch = async () => new Response(JSON.stringify({ detail:'Try again later' }), { status:429, headers:{'content-type':'application/json'} });
+await assert.rejects(first.newVisit(), /Try again later/);
+globalThis.fetch = async () => new Response('{}', { status:200 });
+await assert.rejects(createVisitApi('dm_aaaaaaaa'), /could not start/);
+console.log('Portfolio visit contract: 12 checks passed; fake HTTP only');

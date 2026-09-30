@@ -141,7 +141,7 @@ def extract_still(video: Path, at_seconds: float, out: Path) -> bool:
     return out.exists() and out.stat().st_size > 0
 
 
-# ---------- image clean-up: local first (transparent cut-outs, fringes, small images), Gemini image model when allowed ----------
+# ---------- image clean-up: local first, configured image providers when allowed ----------
 CLEAN_BG_TOP = (246, 248, 252)
 CLEAN_BG_BOTTOM = (226, 232, 241)
 
@@ -211,22 +211,21 @@ def clean_background_local(demo_id: str, src: dict) -> str:
 
 
 def clean_background_gemini(demo_id: str, src: dict) -> str | None:
-    """Ask the Gemini image model for a clean studio version of the same product (no redraw). Raises on quota."""
-    from .llm import gemini
+    """Legacy entry-point name; image routing is now Runware then PixelBin."""
+    from .llm import image_media
     p = model_image_path(demo_id, src)
     out = store.path(demo_id, "derived", store.path(demo_id, src["path"]).stem + "_ai.png")
     if out.exists():
         return f"derived/{out.name}"
-    res = gemini.generate_image([gemini.bytes_part(p)], "Place this exact product on a clean, softly lit light studio background with a subtle floor shadow. Keep the product pixel-accurate: same shape, colours, logos, proportions and viewpoint. Do not add, remove or redraw any part of the product. Remove any jagged white fringe around the edges. Output one photo, 4:3.")
-    if not res:
-        return None
+    res = image_media.generate("Place this exact product on a clean, softly lit light studio background with a subtle floor shadow. Keep the product pixel-accurate: same shape, colours, logos, proportions and viewpoint. Do not add, remove or redraw any part of the product. Remove any jagged white fringe around the edges. Output one photo, 4:3.", reference=p, aspect="4:3")
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(res[0])
+    out.write_bytes(res.png)
+    store.write_json(demo_id, f"derived/{out.name}.provider.json", res.metadata())
     return f"derived/{out.name}"
 
 
 def enhance_images(demo_id: str, emit=lambda m: None) -> list[dict]:
-    """For every image used in the demo: decide whether it needs clean-up, do it (local, or Gemini when
+    """For every image used in the demo: decide whether it needs clean-up, do it (local, or AI when
     settings.enhance_images == 'ai'), and record why on the source. The original file is never touched."""
     demo = store.load(demo_id)
     mode = demo.get("settings", {}).get("enhance_images", "auto")
@@ -238,33 +237,47 @@ def enhance_images(demo_id: str, emit=lambda m: None) -> list[dict]:
             continue
         need, why = needs_cleanup(demo_id, src)
         if not need:
-            store.patch_source(demo_id, src["id"], {"enhanced": {"how": "none", "why": why}})
+            if not src.get("enhanced"):
+                _record_enhancement(demo_id, src["id"], {"provider": "local", "how": "none", "why": why})
             continue
-        how, rel = "local", None
+        how, rel, provenance = "local", None, {"provider": "local"}
         if mode == "ai":
             try:
                 rel = clean_background_gemini(demo_id, src)
-                how = "gemini"
-            except Exception as e:
-                emit(f"Gemini image model unavailable for {src['name']} ({str(e)[:70]}) — using the local clean-up.")
+                provenance = store.read_json(demo_id, rel + ".provider.json", {}) if rel else {}
+                how = provenance.get("provider") or (src.get("enhanced") or {}).get("provider") or "unknown"
+            except Exception:
+                emit(f"Image generation is unavailable for {src['name']} — using local clean-up.")
         if not rel:
             try:
                 rel = clean_background_local(demo_id, src)
                 how = "local"
+                provenance = {"provider": "local"}
             except Exception as e:
                 emit(f"Could not clean {src['name']} ({str(e)[:70]}) — keeping the original.")
                 continue
-        store.patch_source(demo_id, src["id"], {"play": rel, "enhanced": {"how": how, "why": why}})
-        done.append({"source": src["id"], "name": src["name"], "how": how, "why": why, "play": rel})
+        _record_enhancement(demo_id, src["id"], {**provenance, "provider": how, "how": how, "why": why}, rel)
+        done.append({"source": src["id"], "name": src["name"], "how": how, "provider": how, "why": why, "play": rel})
     if done:
         emit(f"Cleaned {len(done)} image(s) for the stage ({', '.join(d['name'] for d in done)}) — originals kept; the demo shows the clean versions.")
     return done
 
 
+def _record_enhancement(demo_id: str, source_id: str, provenance: dict, play: str | None = None):
+    """Save trusted generator provenance without exposing it in client source edits."""
+    def apply(demo):
+        for source in demo.get("sources", []):
+            if source["id"] == source_id:
+                source["enhanced"] = provenance
+                if play is not None:
+                    source["play"] = play
+    store.update(demo_id, apply)
+
+
 def generate_mascot(demo_id: str, persona: dict | None, emit=lambda m: None) -> str | None:
-    """A friendly mascot for the guide, generated once per demo by the Gemini image model. Returns the
+    """A friendly mascot, generated once using the configured image-provider order. Returns the
     media-relative path, or None when generation is not possible (then the player uses the built-in mascot)."""
-    from .llm import gemini
+    from .llm import image_media
     from . import config
     if config.MOCK_LLM:
         return None
@@ -277,13 +290,13 @@ def generate_mascot(demo_id: str, persona: dict | None, emit=lambda m: None) -> 
               f"and a tiny headset, personality {tone}, modern flat illustration with soft gradients in light blue and white, no text, "
               f"centered, plain white background, square.")
     try:
-        res = gemini.generate_image([], prompt)
-    except Exception as e:
-        emit(f"Mascot not generated ({str(e)[:80]}) — the guide uses the built-in mascot.")
-        return None
-    if not res:
+        res = image_media.generate(prompt)
+    except Exception:
+        emit("Mascot generation is unavailable — the guide uses the built-in mascot.")
         return None
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(res[0])
+    out.write_bytes(res.png)
+    store.write_json(demo_id, "media/mascot.png.provider.json", res.metadata())
+    store.update(demo_id, lambda demo: demo.__setitem__("mascot_provider", res.provider))
     emit("Mascot ready.")
     return "media/mascot.png"

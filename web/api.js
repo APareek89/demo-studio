@@ -1,6 +1,9 @@
 // Thin API client + SSE subscription.
 async function handle(r) {
   if (r.ok) return r.status === 204 ? null : r.json();
+  if (r.status === 401 && !r.url.includes('/api/auth/') && typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('portfolio-session-expired'));
+  }
   let msg = r.statusText;
   try { const j = await r.json(); msg = j.detail || JSON.stringify(j); } catch (e) {}
   const err = new Error(msg); err.status = r.status; throw err;

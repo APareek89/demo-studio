@@ -7,6 +7,7 @@ export async function resolveLiveClientFactory(bundle, {
   loadLiveKit = () => import("/web/player/livekit-voice.js"),
   timeoutMs = 6000,
 } = {}) {
+  if (bundle.example?.cached_only) return undefined;
   const override = new URLSearchParams(search).get("voice_transport");
   if (!(bundle.runtime?.version >= 1)) {
     if (override === "livekit") throw new Error("This publication does not support live conversation. Open its standard demo link or publish an updated demo.");

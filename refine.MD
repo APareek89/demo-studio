@@ -249,6 +249,10 @@ Anand rejected the manual Prepare step and large deficit panel: three-minute nar
 Implement `Demo_Studio_Feedback.xlsx` (three sheets, four embedded reference screenshots): blank Studio navigation with lazy draft creation; selected1–5minute duration/default3 throughout preparation and measured publication; one Rehearse feedback chat with uploads; white borderless viewport-contained demo with hero-first welcome/intake and two supported pictures. Preserve approved facts, native image aspect, existing human review, previous publications, on-demand rehearsal and no paid validation. Exact cell mapping and verification are in `docs/feedback-workbook-2026-09-24.md`. The source workbook is read-only and remains outside the repository.
 
 
+## Conversational prompt refinement — 26 September 2026
+
+Anand judged Sumit comparable to Shubh and requested instruction refinement based on his inspected Samvaad showroom agent. Apply approachable speech, brief connected thoughts, direct answers, natural spoken numbers and no repeated praise to Author/live/FAQ instructions. Retain our existing tour/clarification boundaries, evidence conditions and duration budgets. Rejected for this task: changing voice/speed, copying its Hyundai facts or lead capture, adding ambience, or claiming acoustic improvement from mock QA. No new design question; paid regeneration and release are separate from this branch checkpoint.
+
 ## Runtime recovery decisions — 24 September 2026
 
 Implement on `codex/sales-trainer-flow`, with best judgement inside the existing workflow; no approval questions, new agents, graph nodes, services or dependencies. Master merge and AWS deployment wait for Anand to try the completed local demo and approve.

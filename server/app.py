@@ -17,14 +17,109 @@ from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 
 from . import cloud, config, events, graph, orchestrator, runlog, schemas, storage, store, usage
+from . import portfolio_auth as auth
+from . import portfolio_example as examples
 from .agents import align, author, coach, deck, faq, narration, pitch, qa, rehearsal, summary as _summary, visuals, voice
 from .llm import sarvam
 
 app = FastAPI(title="Demo Studio", version="0.1.0")
+auth.install(app)
 from .runtime_live import router as runtime_live_router
 app.include_router(runtime_live_router)
 from .livekit_trial import router as livekit_trial_router
 app.include_router(livekit_trial_router)
+
+
+_PUBLIC_GETS = {"/", "/api/health", "/api/runtime/transport"}
+_PUBLIC_RUNTIME = {"run/visit", "run/qa", "run/pitch", "run/lead", "run/stt", "run/tts", "run/session", "run/livekit/token"}
+_COSTLY_ACTIONS = {"read", "build", "revise", "align", "rehearsal", "voice/sample", "readiness/probe", "evals", "feedback"}
+
+
+@app.middleware("http")
+async def portfolio_boundary(request: Request, call_next):
+    """Private by default; public playback has its own persisted visit capability.
+
+    All demo routes are covered here, including future private routes. Runtime
+    handlers additionally bind request IDs to the visit before any model work.
+    """
+    if not auth.enabled():
+        return await call_next(request)
+    path, method = request.url.path, request.method
+    try:
+        if method not in {"GET", "HEAD", "OPTIONS"}:
+            auth.check_origin(request)
+        if path.startswith("/api/auth/"):
+            pass  # The auth router owns its credential/session rate budgets.
+        elif method in {"GET", "HEAD"} and (path in _PUBLIC_GETS or path.startswith("/web/")):
+            pass
+        elif path.startswith("/media/"):
+            media_parts = path.split("/", 3)
+            if len(media_parts) != 4:
+                raise HTTPException(404, "Media not found")
+            await run_in_threadpool(auth.require_media, request, media_parts[2], media_parts[3])
+        elif path.startswith("/api/share/") and method == "GET":
+            pass  # Exact HMAC capability is verified by share_session below.
+        elif match := re.fullmatch(r"/api/demos/(dm_[a-z0-9]{8})(?:/(.*))?", path):
+            demo_id, action = match.group(1), match.group(2) or ""
+            if (action == "bundle" and method == "GET") or (action in _PUBLIC_RUNTIME and method == "POST"):
+                if not await run_in_threadpool(auth.is_public_demo, demo_id):
+                    if action != "bundle":
+                        raise HTTPException(404, "Published demo not found")
+                    await run_in_threadpool(auth.require_owner, request, demo_id)
+                if action in {"run/qa", "run/pitch", "run/stt", "run/tts"}:
+                    await run_in_threadpool(auth.limit_action, request, "runtime", 60, 60)
+            else:
+                await run_in_threadpool(auth.require_owner, request, demo_id)
+                if method == "POST" and action in _COSTLY_ACTIONS:
+                    if await run_in_threadpool(examples.is_cached_only, demo_id):
+                        raise HTTPException(409, "This prepared example is free to explore. Create a demo with your own sources to generate or revise content.")
+                    await run_in_threadpool(auth.limit_action, request, "build", 40, 3600)
+        elif path.startswith("/api/"):
+            await run_in_threadpool(auth.require_user, request)
+            if path == "/api/cloud/setup":
+                raise HTTPException(403, "Cloud infrastructure is managed by deployment configuration")
+            if path == "/api/voices" and request.query_params.get("demo_id"):
+                await run_in_threadpool(auth.require_owner, request, request.query_params["demo_id"])
+        response = await call_next(request)
+        if path.startswith(("/api/", "/media/")):
+            response.headers["Cache-Control"] = "private, no-store"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "no-referrer" if path.startswith("/api/share/") else "same-origin"
+        return response
+    except HTTPException as error:
+        return JSONResponse({"detail": error.detail}, status_code=error.status_code,
+                            headers={**(error.headers or {}), "Cache-Control": "no-store"})
+
+
+def _runtime_visit(request: Request, demo_id: str, body: dict, *, session_field="session_id"):
+    if not auth.enabled():
+        return
+    visit = auth.require_visit(request, demo_id, body.get(session_field))
+    body[session_field] = visit["session_id"]
+    body["snapshot_id"] = visit["snapshot_id"]
+    body["demo_version"] = visit["published_version"]
+    body["bundle_version"] = visit["published_version"]
+    body["runtime_version"] = 1
+
+
+async def _runtime_body(request: Request, *, limit=65536) -> dict:
+    raw = bytearray()
+    async for part in request.stream():
+        raw.extend(part)
+        if len(raw) > limit:
+            raise HTTPException(413, "The request is too large")
+    try:
+        body = json.loads(raw)
+    except (ValueError, RecursionError):
+        raise HTTPException(400, "Invalid request") from None
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Invalid request")
+    return body
+
+
+def _grant_audio(request: Request, demo_id: str, body: dict, result: dict):
+    auth.grant_response_audio(request, demo_id, body.get("session_id"), result)
+    return result
 
 
 def _demo_or_404(demo_id: str) -> dict:
@@ -44,7 +139,9 @@ def index():
 
 
 @app.get("/media/{demo_id}/{rel:path}")
-def media(demo_id: str, rel: str):
+def media(demo_id: str, rel: str, request: Request):
+    if auth.enabled():
+        return FileResponse(auth.media_file(request, demo_id, rel))
     try:
         p = store.media_path(demo_id, rel)
     except KeyError:
@@ -70,6 +167,14 @@ def runtime_transport():
 
 @app.get("/api/health")
 def health():
+    if auth.enabled():
+        try:
+            with auth.connection() as conn:
+                conn.execute("SET LOCAL statement_timeout='2000ms'")
+                conn.execute("SELECT 1").fetchone()
+        except RuntimeError:
+            return JSONResponse({"ok": False, "detail": "Account storage is unavailable"}, status_code=503)
+        return {"ok": True, "auth": True, "mock": bool(config.MOCK_LLM)}
     return {**config.health(), "cloud": cloud.status() if cloud.enabled() or True else {}}
 
 
@@ -101,11 +206,12 @@ def sync_demo(demo_id: str):
 
 
 @app.get("/api/demos")
-def list_demos():
-    local = store.list_demos()
+def list_demos(request: Request):
+    user = auth.require_user(request)
+    local = store.list_demos(owner_user_id=user["id"] if auth.enabled() else None)
     seen = {d["id"] for d in local}
     out = [{**d, "location": "local+cloud" if cloud.enabled() else "local"} for d in local]
-    for c in cloud.list_cloud_demos():
+    for c in ([] if auth.enabled() else cloud.list_cloud_demos()):
         if c.get("demo_id") in seen:
             continue
         out.append({"id": c["demo_id"], "name": c.get("name"), "status": c.get("status"), "version": c.get("version", 0), "created_at": c.get("created_at"), "updated_at": c.get("updated_at"),
@@ -115,9 +221,10 @@ def list_demos():
 
 @app.post("/api/demos")
 async def create_demo(req: Request):
+    user = auth.require_user(req)
     body = await req.json()
     name = (body.get("name") or "").strip()
-    demo = store.new_demo(name or "Untitled demo")
+    demo = store.new_demo(name or "Untitled demo", owner_user_id=user["id"] if auth.enabled() else None)
     url = (body.get("url") or "").strip()
     if url:
         store.update(demo["id"], lambda d: d["product"].__setitem__("url", url))
@@ -149,9 +256,20 @@ def delete_demo(demo_id: str):
 
 
 @app.post("/api/demos/{demo_id}/duplicate")
-def duplicate(demo_id: str):
+def duplicate(demo_id: str, request: Request):
+    user = auth.require_owner(request, demo_id)
     _demo_or_404(demo_id)
-    return store.duplicate_demo(demo_id)
+    return store.duplicate_demo(demo_id, owner_user_id=user["id"] if auth.enabled() else None)
+
+
+@app.post("/api/examples")
+def create_example(request: Request):
+    from .portfolio_example import create_example as copy_example
+    user = auth.require_user(request)
+    auth.limit_action(request, "examples", limit=10, seconds=3600)
+    if auth.enabled():
+        auth.limit_owner_action(user["id"], "examples", limit=10, seconds=3600)
+    return copy_example(user["id"] if auth.enabled() else None)
 
 
 @app.patch("/api/demos/{demo_id}")
@@ -331,9 +449,10 @@ def get_trace(demo_id: str, limit: int = 300):
 
 
 @app.get("/api/runtime/metrics")
-def runtime_metrics():
+def runtime_metrics(request: Request):
     from .runtime_metrics import aggregate
-    return aggregate()
+    user = auth.require_user(request)
+    return aggregate(demo_ids=auth.owned_demo_ids(user["id"]) if auth.enabled() else None)
 
 
 @app.get("/api/runtime/workflow")
@@ -382,7 +501,7 @@ async def run_evals(demo_id: str, req: Request):
         try:
             questions = rehearsal.generate_questions(demo_id, int(body.get("n") or 12))
         except RuntimeError as e:
-            raise HTTPException(502, str(e))
+            raise HTTPException(502, "The answer provider could not finish. Please try again.") from None
     if not questions:
         raise HTTPException(400, "give questions, or set generate=true")
     results = []
@@ -1195,7 +1314,7 @@ async def voice_sample(demo_id: str, req: Request):
     try:
         rel = voice.sample(demo_id, text)
     except Exception as e:
-        raise HTTPException(502, str(e)[:300])
+        raise HTTPException(502, "The voice provider could not finish. Please try again.") from None
     if rel:
         plan = store.read_json(demo_id, "plan.json") or {}
         plan["voice_sample_audio"] = rel
@@ -1212,7 +1331,7 @@ def get_bundle(demo_id: str):
     b = store.read_json(demo_id, "bundle.json")
     if not b:
         raise HTTPException(404, "not built yet")
-    return b
+    return examples.public_bundle(demo_id, b) if examples.is_cached_only(demo_id) else b
 
 
 @app.post("/api/demos/{demo_id}/run/qa")
@@ -1220,10 +1339,16 @@ async def run_qa(demo_id: str, req: Request):
     demo = _demo_or_404(demo_id)
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
-    body = await req.json()
+    body = await _runtime_body(req)
+    await run_in_threadpool(_runtime_visit, req, demo_id, body)
     q = (body.get("question") or "").strip()
+    if len(q) > 2000:
+        raise HTTPException(400, "Keep questions under 2,000 characters")
     if not q:
         raise HTTPException(400, "question required")
+    if examples.is_cached_only(demo_id):
+        result = await asyncio.to_thread(examples.cached_answer, demo_id, q, body.get("slide_id"))
+        return await run_in_threadpool(_grant_audio, req, demo_id, body, result)
     # Legacy integrations without a session keep the original REST contract.
     # New players always identify their session; explicit v1 also enables graph
     # calls from tools/benchmarks without a browser.
@@ -1243,7 +1368,7 @@ async def run_qa(demo_id: str, req: Request):
             except Exception:
                 result["audio"] = None
         runlog.runtime_qa(demo_id, q, result, body.get("profile") or None)
-        return result
+        return await run_in_threadpool(_grant_audio, req, demo_id, body, result)
     cur_slide = (body.get("slide_id") or "").strip() or None
     # Reviewed script is authoritative for narration/deeper citations, including
     # when saved slide design still contains an older copy of those lines.
@@ -1274,7 +1399,7 @@ async def run_qa(demo_id: str, req: Request):
     try:
         r = await asyncio.to_thread(qa.answer, demo_id, q, body.get("history") or [], body.get("profile") or None, live=True)
     except RuntimeError as e:
-        raise HTTPException(502, str(e))
+        raise HTTPException(502, "The answer provider could not finish. Please try again.") from None
     r["from_bank"] = False
     routed(r)
     runlog.runtime_qa(demo_id, q, r, body.get("profile") or None)
@@ -1286,20 +1411,27 @@ async def run_pitch(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
-    body = await req.json()
+    body = await _runtime_body(req)
+    await run_in_threadpool(_runtime_visit, req, demo_id, body)
+    if examples.is_cached_only(demo_id):
+        return examples.cached_pitch(demo_id)
     if body.get("runtime_version") == 1 or (body.get("session_id") and (store.read_json(demo_id, "bundle.json") or {}).get("runtime", {}).get("version") == 1):
         from .runtime_graph import run_turn
-        return (await run_turn(demo_id, body, kind="explore"))["result"]
+        result = (await run_turn(demo_id, body, kind="explore"))["result"]
+        return await run_in_threadpool(_grant_audio, req, demo_id, body, result)
     try:
         return await asyncio.to_thread(pitch.plan_pitch, demo_id, body.get("profile") or {}, bool(body.get("refine")))
     except RuntimeError as e:
-        raise HTTPException(502, str(e))
+        raise HTTPException(502, "The answer provider could not finish. Please try again.") from None
 
 
 @app.post("/api/demos/{demo_id}/run/lead")
 async def run_lead(demo_id: str, req: Request):
     _demo_or_404(demo_id)
-    body = await req.json()
+    body = await _runtime_body(req)
+    await run_in_threadpool(_runtime_visit, req, demo_id, body)
+    if examples.is_cached_only(demo_id):
+        raise HTTPException(409, "This portfolio example does not collect contact details or arrange dealership follow-ups.")
     phone = qa.parse_phone(body.get("phone") or body.get("text") or "")
     if not phone:
         raise HTTPException(400, "no valid Indian mobile number found")
@@ -1337,19 +1469,24 @@ def voices(demo_id: str = ""):
 
 
 @app.post("/api/demos/{demo_id}/run/stt")
-async def run_stt(demo_id: str, file: UploadFile = File(...), language: str = Form(default="en-IN")):
+async def run_stt(demo_id: str, req: Request, file: UploadFile = File(...), language: str = Form(default="en-IN"), session_id: str = Form(default="")):
+    await run_in_threadpool(auth.require_visit, req, demo_id, session_id)
     _demo_or_404(demo_id)
+    if examples.is_cached_only(demo_id):
+        raise HTTPException(409, "This free example uses recorded narration and typed questions. Live microphone input is available in your own demos.")
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
     if config.STT_PROVIDER != "sarvam" and not config.MOCK_LLM:
         raise HTTPException(400, "server STT not configured (set SARVAM_API_KEY)")
-    data = await file.read()
+    data = await file.read(8 * 1024 * 1024 + 1)
+    if len(data) > 8 * 1024 * 1024:
+        raise HTTPException(413, "Keep voice recordings under 8 MB")
     if len(data) < 1000:
         return {"transcript": ""}
     try:
         text = await asyncio.to_thread(sarvam.stt, data, file.filename or "audio.wav", language, file.content_type or "audio/wav")
     except Exception as e:
-        raise HTTPException(502, sarvam.describe_error(e))
+        raise HTTPException(502, "The speech provider could not finish. Please try again.") from None
     return {"transcript": text}
 
 
@@ -1358,15 +1495,22 @@ async def run_tts(demo_id: str, req: Request):
     _demo_or_404(demo_id)
     usage.current_demo.set(demo_id)
     usage.current_stage.set("runtime")
-    body = await req.json()
+    body = await _runtime_body(req)
+    await run_in_threadpool(_runtime_visit, req, demo_id, body)
     text = (body.get("text") or "").strip()
+    if len(text) > 1500:
+        raise HTTPException(400, "Keep spoken text under 1,500 characters")
     if not text:
         raise HTTPException(400, "text required")
+    if examples.is_cached_only(demo_id):
+        return {"url": examples.cached_audio(demo_id, text), "cached_only": True}
     try:
         identity = voice.runtime_demo(demo_id, body.get("language") or None)
         rel = await asyncio.to_thread(voice.render_line, demo_id, text, lang=identity.get("settings", {}).get("language"), demo=identity, strict=True)
     except Exception as e:
-        raise HTTPException(502, str(e)[:300])
+        raise HTTPException(502, "The voice provider could not finish. Please try again.") from None
+    if rel:
+        await run_in_threadpool(auth.grant_visit_media, req, demo_id, body.get("session_id"), rel)
     return {"url": f"/media/{demo_id}/{rel}" if rel else None}
 
 
@@ -1400,7 +1544,8 @@ async def save_session(demo_id: str, req: Request):
     work runs only for an ended content revision, never for an autosave tick.
     """
     _demo_or_404(demo_id)
-    body = await req.json()
+    body = await _runtime_body(req, limit=1048576)
+    await run_in_threadpool(lambda: _runtime_visit(req, demo_id, body, session_field="id"))
     incoming_seq = body.get("save_seq")
     if "save_seq" in body and (type(incoming_seq) is not int or not 0 < incoming_seq <= 9007199254740991):
         raise HTTPException(400, "save_seq must be a positive safe integer")
@@ -1431,7 +1576,8 @@ async def save_session(demo_id: str, req: Request):
         be.put_session(demo_id, body)
     be.after_write(demo_id)
     if body.get("ended") and not body.get("summary"):
-        threading.Thread(target=_summarize_session, args=(demo_id, sid), daemon=True, name=f"summary-{sid}").start()
+        scope = await run_in_threadpool(auth.capture_job_scope, demo_id)
+        threading.Thread(target=auth.run_scoped_job, args=(scope, _summarize_session, demo_id, sid), daemon=True, name=f"summary-{sid}").start()
     return {"ok": True, "id": sid, "share_key": _share_key(demo_id, sid),
             "accepted": True, **({"save_seq": incoming_seq} if incoming_seq is not None else {})}
 
@@ -1455,10 +1601,10 @@ def _summarize_session(demo_id: str, sid: str) -> None:
         demo_token = usage.current_demo.set(demo_id)
         stage_token = usage.current_stage.set("runtime")
         try:
-            result = _summary.summarize(demo_id, s)
+            result = examples.cached_summary(demo_id, s) if examples.is_cached_only(demo_id) else _summary.summarize(demo_id, s)
         except Exception as e:  # noqa: BLE001
-            result = {"error": str(e)[:200], "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
-            store.log(demo_id, "summary-error", {"session": sid, "error": str(e)[:200]})
+            result = {"error": "The visit summary could not finish.", "generated_at": time.time(), "transcript_lines": len(s.get("transcript", []))}
+            store.log(demo_id, "summary-error", {"session": sid, "error_type": type(e).__name__})
         finally:
             usage.current_stage.reset(stage_token)
             usage.current_demo.reset(demo_token)
@@ -1556,8 +1702,12 @@ def get_session(demo_id: str, sid: str):
 
 
 @app.get("/api/share/{demo_id}/{sid}")
-def share_session(demo_id: str, sid: str, k: str = ""):
-    """Read-only view for a link holder: the summary, never the full transcript or a full phone number."""
+def share_session(demo_id: str, sid: str, request: Request, k: str = ""):
+    """The owning visitor or creator can view a signed, minimized recap."""
+    if auth.enabled():
+        user = auth.current_user(request)
+        if not user or auth.owner_for(demo_id) != user["id"]:
+            auth.require_visit(request, demo_id, sid)
     if not store.exists(demo_id) or not k or not hmac.compare_digest(k, _share_key(demo_id, sid)):
         raise HTTPException(403, "this link is not valid")
     s = storage.backend().get_session(demo_id, sid)
@@ -1599,4 +1749,7 @@ app.mount("/web", StaticFiles(directory=str(config.WEB_DIR)), name="web")
 
 @app.exception_handler(Exception)
 async def on_error(request: Request, exc: Exception):
-    return JSONResponse(status_code=500, content={"detail": str(exc)[:500]})
+    # Avoid returning provider payloads, filesystem paths or database credentials.
+    import logging
+    logging.getLogger("demo-studio").error("request_failed type=%s", type(exc).__name__)
+    return JSONResponse(status_code=500, content={"detail": "This request could not finish. Please try again."})
