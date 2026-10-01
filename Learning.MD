@@ -2742,3 +2742,13 @@ All six corrections passed independent review and blocked-network regressions; r
 DEP02 is verified on the actual AWS host: installed Chromium 153 and trusted Amazon Linux libraries launch with the sandbox enabled, and the production source renderer executes an intercepted local JavaScript fixture. Poppler is installed for PDF rasterization; ordinary PDF text extraction is available. Tesseract is absent from the configured trusted repositories, so scanned-image OCR remains unavailable; do not claim exhaustive image-only PDF extraction on this host. No new repository, unsupported binary, unsandboxed browser or compile-from-source workaround was introduced.
 
 The service switched successfully, all prior AWS demo bundles and `.env` remain unchanged, and the 2,017 transferred CRETA files retain their hashes after HTTPS/media/report/WebSocket readback. The original session is the only CRETA session on AWS; no additional usage or session record was created. Deployment receipt and rollback: `docs/aws/release-2026-09-23.md`.
+
+## 2026-10-01 — gallery fan-out exhausted the account database role
+
+**Symptom:** some BMW image requests failed during a concurrent gallery load. PostgreSQL recorded 28 “too many connections for role” errors at the matching timestamps.
+
+**Five whys:** (1) Media authorization could not connect. (2) Parallel image reads exceeded the role’s 15 connections. (3) Every auth helper opened a fresh connection without admission control. (4) The earlier media checks were serial or had only six concurrent requests. (5) Verification did not represent the gallery’s 44-request fan-out.
+
+**Fix:** a six-slot process-wide connection gate with a 10-second wait, released after successful transactions, failed connects and exceptions. Keep fresh session/owner checks and the existing database role limit. Do not add authorization caching or provider retries.
+
+**Regression:** real PostgreSQL with a separate synthetic role capped at 15; 44 owned private-media requests return the exact bytes, 44 other-owner requests return 404. A second check exhausts neither capacity after repeated connection failures nor after transaction exceptions. Core mock gates remain provider-free.

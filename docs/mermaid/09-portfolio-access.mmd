@@ -2,7 +2,8 @@
 flowchart TD
   SIGNIN["[FUNCTION] Email/password signup or sign-in<br/>Origin check, rate budget, bcrypt"] --> SESSION["[DATA] PostgreSQL users and opaque cookie sessions"]
   REQUEST["[FUNCTION] API request"] --> GATE{"[FUNCTION] Private builder or public playback?"}
-  SESSION --> OWNER{"[FUNCTION] Signed-in user owns demo?"}
+  SESSION --> DBLIMIT["[FUNCTION] At most six database connections per process<br/>Wait at most 10 seconds; release on every exit"]
+  DBLIMIT --> OWNER{"[FUNCTION] Signed-in user owns demo?"}
   GATE -->|"builder / metrics / source files"| OWNER
   OWNER -->|"yes"| WORKFLOW["[FUNCTION] Existing Sources → Read → six Align approvals → Voice → Bundle"]
   OWNER -->|"no"| DENY["[FUNCTION] Reject before private data access"]

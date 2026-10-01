@@ -546,7 +546,8 @@ graph TD;
 flowchart TD
   SIGNIN[&quot;[FUNCTION] Email/password signup or sign-in&lt;br/&gt;Origin check, rate budget, bcrypt&quot;] --&gt; SESSION[&quot;[DATA] PostgreSQL users and opaque cookie sessions&quot;]
   REQUEST[&quot;[FUNCTION] API request&quot;] --&gt; GATE{&quot;[FUNCTION] Private builder or public playback?&quot;}
-  SESSION --&gt; OWNER{&quot;[FUNCTION] Signed-in user owns demo?&quot;}
+  SESSION --&gt; DBLIMIT[&quot;[FUNCTION] At most six database connections per process&lt;br/&gt;Wait at most 10 seconds; release on every exit&quot;]
+  DBLIMIT --&gt; OWNER{&quot;[FUNCTION] Signed-in user owns demo?&quot;}
   GATE --&gt;|&quot;builder / metrics / source files&quot;| OWNER
   OWNER --&gt;|&quot;yes&quot;| WORKFLOW[&quot;[FUNCTION] Existing Sources → Read → six Align approvals → Voice → Bundle&quot;]
   OWNER --&gt;|&quot;no&quot;| DENY[&quot;[FUNCTION] Reject before private data access&quot;]

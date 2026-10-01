@@ -263,3 +263,7 @@ Implement on `codex/sales-trainer-flow`, with best judgement inside the existing
 - Follow-up forms require an explicit choice, honor Not now and remain within the mobile viewport. Ongoing session snapshots use the existing save endpoint with ordered writes and heard-prefix preservation.
 - Caption/audio lag is diagnosis-only: captions are set before asynchronous speech starts, without word timing. No synchronization redesign.
 - One isolated full mock QA precedes one authorized paid final journey using the supplied16JPGs/PDF. Conflicting source claims are held rather than silently reconciled or approved. No new open design question.
+
+## 1 October — bound gallery database connections
+
+Approved the narrow account-storage connection gate after PostgreSQL confirmed role saturation during the gallery load. Chosen: six concurrent connections per process and a bounded queue; rejected: raising the shared role limit or caching authorization, which would respectively move pressure to PostgreSQL or weaken immediate session/ownership checks. Keep the existing workflow, storage model and providers.

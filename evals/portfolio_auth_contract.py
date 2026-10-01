@@ -297,5 +297,99 @@ class AccountsAndOwnership(unittest.TestCase):
                     self.fail("Missing CA accepted")
 
 
+    def test_gallery_44_concurrent_private_media_reads_keep_owner_boundary(self):
+        """Actual PG role limit and real authorization, with overlapping gallery reads."""
+        import threading, time
+        from contextlib import contextmanager
+        from concurrent.futures import ThreadPoolExecutor
+        import psycopg
+        from psycopg import sql
+        from psycopg.conninfo import make_conninfo
+        from server import portfolio_media
+        role = "demo_gallery_" + secrets.token_hex(6)
+        password = secrets.token_urlsafe(24)
+        admin_dsn = os.environ["DATABASE_URL"]
+        original_connect = psycopg.connect
+        with original_connect(admin_dsn, autocommit=True) as conn:
+            conn.execute(sql.SQL("CREATE ROLE {} LOGIN CONNECTION LIMIT 15 PASSWORD {}").format(sql.Identifier(role), sql.Literal(password)))
+            conn.execute(sql.SQL("GRANT CONNECT ON DATABASE demo_studio_auth_test TO {}").format(sql.Identifier(role)))
+            conn.execute(sql.SQL("GRANT USAGE ON SCHEMA public TO {}").format(sql.Identifier(role)))
+            conn.execute(sql.SQL("GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {}").format(sql.Identifier(role)))
+        rel = "sources/gallery-private.png"
+        content = b"synthetic owned gallery bytes"
+        store.path(self.demo, rel).write_bytes(content)
+        portfolio_media.persist_private(self.demo, rel)
+        active = peak = 0
+        lock = threading.Lock()
+
+        @contextmanager
+        def observed_connect(*args, **kwargs):
+            nonlocal active, peak
+            with original_connect(*args, **kwargs) as conn:
+                with lock:
+                    active += 1
+                    peak = max(peak, active)
+                try:
+                    # Make the browser's concurrent authorization work overlap.
+                    time.sleep(0.03)
+                    yield conn
+                finally:
+                    with lock:
+                        active -= 1
+
+        def batch(cookies, expected):
+            barrier = threading.Barrier(44)
+            def request(_):
+                # Startup/migrations already ran as fixture admin in setUpClass.
+                # Each client uses only the limited runtime role here.
+                client = TestClient(app, base_url=os.environ["PUBLIC_BASE_URL"])
+                try:
+                    client.cookies.update(cookies)
+                    barrier.wait(timeout=10)
+                    response = client.get(f"/probe/media-file/{self.demo}/{rel}")
+                    self.assertEqual(response.status_code, expected)
+                    if expected == 200:
+                        self.assertEqual(response.content, content)
+                finally:
+                    client.close()
+            with ThreadPoolExecutor(max_workers=44) as workers:
+                list(workers.map(request, range(44)))
+
+        limited = make_conninfo(admin_dsn, user=role, password=password)
+        try:
+            with patch.dict(os.environ, DATABASE_URL=limited), patch.object(psycopg, "connect", observed_connect):
+                batch(dict(self.a.cookies), 200)
+                batch(dict(self.b.cookies), 404)
+            self.assertGreater(peak, 1)
+            self.assertLessEqual(peak, 6)
+            self.assertEqual(active, 0)
+        finally:
+            with original_connect(admin_dsn, autocommit=True) as conn:
+                conn.execute(sql.SQL("DROP OWNED BY {}").format(sql.Identifier(role)))
+                conn.execute(sql.SQL("DROP ROLE {}").format(sql.Identifier(role)))
+
+
+    def test_failed_connect_and_transaction_return_capacity(self):
+        import psycopg
+        for _ in range(8):
+            with patch.object(psycopg, "connect", side_effect=psycopg.OperationalError("synthetic private connection detail")):
+                with self.assertRaisesRegex(RuntimeError, "^Account storage is unavailable$"):
+                    with auth.connection():
+                        self.fail("Failed connect yielded a connection")
+        for _ in range(8):
+            with self.assertRaisesRegex(ValueError, "synthetic transaction failure"):
+                with auth.connection():
+                    raise ValueError("synthetic transaction failure")
+        with auth.connection() as conn:
+            self.assertEqual(conn.execute("SELECT 1 AS n").fetchone()["n"], 1)
+
+
+
+@app.get("/probe/media-file/{demo_id}/{rel:path}")
+def media_file_probe(demo_id: str, rel: str, request: Request):
+    from fastapi.responses import FileResponse
+    return FileResponse(auth.media_file(request, demo_id, rel))
+
+
 if __name__ == "__main__":
     unittest.main()

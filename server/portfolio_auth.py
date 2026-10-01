@@ -15,6 +15,7 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import secrets
+import threading
 import time
 from urllib.parse import urlsplit
 import uuid
@@ -32,6 +33,11 @@ _TOKEN = re.compile(r"[A-Za-z0-9_-]{40,64}\Z")
 _MEDIA_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif", ".bmp", ".ico",
                    ".mp3", ".wav", ".ogg", ".m4a", ".aac", ".flac", ".opus", ".mp4", ".webm", ".mov", ".m4v"}
 _dummy_password_hash = None
+# Gallery requests share the app role's finite PostgreSQL connection allowance.
+# Bound connection creation (including failed connects), not authorization results:
+# each request still checks its current session and owner using a fresh transaction.
+_connection_slots = threading.BoundedSemaphore(6)
+_CONNECTION_WAIT_SECONDS = 10
 
 
 def enabled() -> bool:
@@ -85,12 +91,16 @@ def connection():
             raise RuntimeError("Hosted auth requires a PostgreSQL CA file")
         options.update(sslmode="verify-full", sslrootcert=ca)
     options.update(connect_timeout=5, application_name="demo-studio-auth")
+    if not _connection_slots.acquire(timeout=_CONNECTION_WAIT_SECONDS):
+        raise RuntimeError("Account storage is busy; please try again")
     try:
         with psycopg.connect(**options, row_factory=dict_row) as conn:
             yield conn
     except psycopg.Error as exc:
         # Never expose DB URIs, credentials or row values in HTTP error strings.
         raise RuntimeError("Account storage is unavailable") from None
+    finally:
+        _connection_slots.release()
 
 
 def initialize() -> None:
