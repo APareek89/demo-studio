@@ -15,7 +15,7 @@ os.environ.update(MOCK_LLM="1", PORTFOLIO_AUTH_ENABLED="1", CLOUD_SYNC="0", STOR
 dsn = os.environ.get("PORTFOLIO_TEST_DATABASE_URL", "postgresql://macbook@127.0.0.1:55443/demo_studio_auth_test")
 from psycopg.conninfo import conninfo_to_dict
 options = conninfo_to_dict(dsn)
-if options.get("host") != "127.0.0.1" or options.get("dbname") != "demo_studio_auth_test":
+if options.get("host") != "127.0.0.1" or options.get("dbname") not in {"demo_studio_auth_test", "demo_studio_fmea_test"}:
     raise RuntimeError("This destructive synthetic test requires its dedicated loopback database")
 os.environ["DATABASE_URL"] = dsn
 temporary = tempfile.TemporaryDirectory(prefix="demo-auth-contract-")

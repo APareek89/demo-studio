@@ -208,7 +208,7 @@ def run():
         sid = "release-visit"
         base = {"runtime_version": 1, "session_id": sid, "input_mode": "text", "voice_it": True,
                 "snapshot_id": published["knowledge_snapshot_id"], "profile": {}, "history": []}
-        question = "What does the driver seat handbook describe?"
+        question = "Before I decide, explain what the driver seat handbook actually says. Please use the supplied evidence."
         first = post("run/qa", {**base, "turn_id": "first", "question": question})
         check("runtime answers from pinned approved evidence and learns customer answer", first["answered"] and first["fact_ids"] and not first["from_bank"] and first.get("faq_entry_id"))
         bank_id = first["faq_entry_id"]
@@ -219,7 +219,7 @@ def run():
         entry = next(row for row in bank["entries"] if row["id"] == bank_id)
         check("repeated question uses validated cache before graph reasoning and increments count", repeated["from_bank"] and repeated["answer"] == first["answer"] and entry["asked_count"] == 2)
         check("cached exact wording keeps the same recorded audio", repeated["audio"] == first["audio"] and bool(repeated["audio"]))
-        unknown_question = "What is the battery warranty? Do not search online."
+        unknown_question = "Can you guarantee the battery warranty for my purchase? Do not search online or guess missing terms."
         from server.runtime_state import TurnDecision
         decline = TurnDecision(action="answer", answered=False, sentences=[{
             "text": "I couldn't verify the battery warranty.", "kind": "limitation"}])

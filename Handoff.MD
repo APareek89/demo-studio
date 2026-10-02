@@ -27,3 +27,12 @@ Secret scanning has exact reviewed false-positive fingerprints plus a line-SHA g
 ## 1 October follow-up — concurrent gallery authorization
 
 A 44-image gallery load exposed the hosted database role’s 15-connection limit. Auth/media helpers now admit at most six connections per application process, with a 10-second bounded wait and unconditional release. Every request still checks its current session and owner; no authorization cache, provider change, schema change or connection-limit increase. The actual PostgreSQL regression runs 44 simultaneous owned media reads and 44 foreign-owner denials against a role capped at 15. The original unbounded admission is reproduced separately. The root operator deployed the image-only update with environment and mounts unchanged. Live verification passed 44 concurrent gallery reads with exact hashes and 44 foreign-owner private-media denials. A separate guarded normal Voice → Bundle check made one Sarvam Bulbul v3 request for a 16-character filler, measured 1.024 seconds, and retained 50 other recordings, all six approvals, and all four prior owner demos. Estimated INR0.048 is based on the configured rate, not invoice evidence; it does not establish a fully uncached text or speech pipeline. Ordinary real mode is restored with the one-shot claims retained.
+
+
+## Free FMEA review — 2 October 2026
+
+Canonical portfolio checkout only; no changes to the separate original Demo Studio clone. Current runtime was preserved: no new runtime defect was reproduced in the scoped free checks. Normal account/session ownership,44 concurrent private media requests, core Read/Align/Build/Rehearse plumbing, publication approval and measured narration were exercised with external network denied.
+
+The release driver uses newly authored buyer questions and explicit synthetic provider outputs. Its silent WAV audio passed the unchanged194.22-second measured publication gate; this is not an acoustic-quality claim. Root owns browser/screenshot acceptance.
+
+See `docs/qa/2026-10-02/REPORT.md`, `fmea.json`, and `validation.json`. Local crawler rendering previously timed out and remains unverified; image-only PDF OCR was skipped because its tools are absent. These cases are not passing evidence. No live provider, cloud mutation, deployment or commit was made by this audit.

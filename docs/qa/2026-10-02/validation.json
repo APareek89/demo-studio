@@ -1,0 +1,34 @@
+{
+  "provider_calls": 0,
+  "cloud_mutations": 0,
+  "core": {
+    "qa_deck": 445,
+    "qa_accept": 24,
+    "smoke_phases": 3,
+    "note": "Existing core harness readiness/duration stubs are explicit; real publication is checked separately."
+  },
+  "release_driver": {
+    "passed": 24,
+    "narration_seconds": 194.22,
+    "real_duration_gate": true,
+    "provider_output": "canned text and silent WAV fixture",
+    "browser": "not run; root owns CUA"
+  },
+  "auth_pg": {
+    "passed": 16,
+    "cases": "44 concurrent media requests, foreign-owner denial, session/visit capability and DB-slot cleanup"
+  },
+  "targeted_contract_files_passed": 25,
+  "knowledge": {
+    "passed": 58,
+    "skipped": 2,
+    "browser_renderer": "timed out earlier; explicitly not claimed",
+    "ocr": "tools unavailable"
+  },
+  "runtime_changes": "None: existing runtime controls passed the scoped local checks.",
+  "residuals": [
+    "No live voice acoustic quality claim.",
+    "Crawler renderer and image-only OCR remain unverified.",
+    "Screenshots belong to root normal-auth preview acceptance."
+  ]
+}

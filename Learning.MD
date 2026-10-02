@@ -2752,3 +2752,12 @@ The service switched successfully, all prior AWS demo bundles and `.env` remain 
 **Fix:** a six-slot process-wide connection gate with a 10-second wait, released after successful transactions, failed connects and exceptions. Keep fresh session/owner checks and the existing database role limit. Do not add authorization caching or provider retries.
 
 **Regression:** real PostgreSQL with a separate synthetic role capped at 15; 44 owned private-media requests return the exact bytes, 44 other-owner requests return 404. A second check exhausts neither capacity after repeated connection failures nor after transaction exceptions. Core mock gates remain provider-free.
+
+
+## Free FMEA review — 2 October 2026
+
+Canonical portfolio checkout only; no changes to the separate original Demo Studio clone. Current runtime was preserved: no new runtime defect was reproduced in the scoped free checks. Normal account/session ownership,44 concurrent private media requests, core Read/Align/Build/Rehearse plumbing, publication approval and measured narration were exercised with external network denied.
+
+The release driver uses newly authored buyer questions and explicit synthetic provider outputs. Its silent WAV audio passed the unchanged194.22-second measured publication gate; this is not an acoustic-quality claim. Root owns browser/screenshot acceptance.
+
+See `docs/qa/2026-10-02/REPORT.md`, `fmea.json`, and `validation.json`. Local crawler rendering previously timed out and remains unverified; image-only PDF OCR was skipped because its tools are absent. These cases are not passing evidence. No live provider, cloud mutation, deployment or commit was made by this audit.
