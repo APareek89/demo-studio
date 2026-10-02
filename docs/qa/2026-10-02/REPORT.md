@@ -7,3 +7,7 @@ The release driver uses newly authored buyer questions and explicit synthetic pr
 See `docs/qa/2026-10-02/REPORT.md`, `fmea.json`, and `validation.json`. Local crawler rendering previously timed out and remains unverified; image-only PDF OCR was skipped because its tools are absent. These cases are not passing evidence. No live provider, cloud mutation, deployment or commit was made by this audit.
 
 Scores prioritize review (Severity × Occurrence × Detection); they are judgments, not measured production failure rates. Each row records its own evidence level. Local fixture passes do not imply provider quality, deployed behavior, or screenshot acceptance. Existing live receipts remain unchanged.
+
+## Root browser acceptance
+
+Root checked the normal-auth prepared BMW experience in desktop and 390px mobile layouts: browse, question, explicitly prepared answer, mute, stop, and Visit saved recap. Controls remained usable. `browser-qa.json` pins the parent-attributed checks and screenshot hashes. This confirms the cached example UI; no runtime change, redeployment, live voice generation or acoustic acceptance is claimed. Native/driver QA above is retained rather than rerun for this documentation-only update.

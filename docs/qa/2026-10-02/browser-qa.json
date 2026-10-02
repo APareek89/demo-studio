@@ -1,0 +1,21 @@
+{
+  "status": "parent_reported_browser_acceptance",
+  "source": "Root CUA confirmations in current task; auditor did not operate browser",
+  "generated_at": "2026-10-02T08:44:43.563306+00:00",
+  "checks": "Normal-auth prepared BMW: browse,question,explicit preparedanswer,mute,stop,Visit saved recap;desktop/mobile390controls usable.",
+  "provider_calls": 0,
+  "runtime_changed": false,
+  "redeployed_in_this_review": false,
+  "screenshots": [
+    {
+      "path": "/Users/macbook/Documents/Codex/portfolio/_workstreams/portfolio-fmea-20261002/screenshots/demo-studio-desktop.png",
+      "sha256": "4fdb97fef13a8787894dd3a06004c70d120d81b1c9601301b5b4d4782da0084e",
+      "bytes": 94443
+    },
+    {
+      "path": "/Users/macbook/Documents/Codex/portfolio/_workstreams/portfolio-fmea-20261002/screenshots/demo-studio-mobile.png",
+      "sha256": "c0fdb3ad8224fbb2dd3db2c953a652b0537514f904f163be00524195c280d094",
+      "bytes": 53390
+    }
+  ]
+}
